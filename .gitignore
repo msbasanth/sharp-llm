@@ -32,5 +32,8 @@ Thumbs.db
 # Large binary files
 *.mp4
 
-# External reference repos
-src/insights/
+# External reference repos (keep HVSS models tracked)
+src/insights/*
+!src/insights/hvss-calculator-lab-main/
+src/insights/hvss-calculator-lab-main/*
+!src/insights/hvss-calculator-lab-main/models/

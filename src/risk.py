@@ -76,6 +76,8 @@ _SEVERITY_BY_CWE_CATEGORY: dict[str, float] = {
     # Integer overflows / type issues — can lead to buffer overflows
     "190": 0.75, "191": 0.75, "194": 0.65, "195": 0.65,
     "196": 0.65, "197": 0.65,
+    # Arithmetic / conversion errors — can corrupt clinical calculations
+    "369": 0.55, "681": 0.65,
     # Race conditions
     "364": 0.70, "366": 0.70, "367": 0.75, "667": 0.65,
     # Resource management

@@ -1,6 +1,22 @@
 # SHARP-LLM
 
-A framework for source code vulnerability detection and CWE classification using deep learning models. Supports multi-model comparison across CodeT5, CodeBERT, GraphCodeBERT, CodeGemma (QLoRA), and BiLSTM-Attention architectures.
+A framework for source code vulnerability detection, CWE classification, and **healthcare-specific risk prioritization** using deep learning models. Supports multi-model comparison across CodeT5, CodeBERT, GraphCodeBERT, CodeGemma (QLoRA), and BiLSTM-Attention architectures, with an integrated Healthcare Software Vulnerability Scoring System (HSVSS).
+
+## Current Status
+
+| Component | Status |
+|---|---|
+| Vulnerability detection pipeline (5 models) | ✅ Complete |
+| 118-CWE classification (macro-F1 0.96) | ✅ Complete |
+| Template-aware anti-leakage splitting | ✅ Complete |
+| Healthcare risk prioritization (`src/risk.py`) | ✅ Complete (5-weight baseline) |
+| HVSS ML models (retrained for sklearn 1.8.0) | ✅ Complete |
+| Streamlit web UI | ✅ Running |
+| HSVSS 8-dimensional scoring engine | 🔜 Phase 2 (next) |
+| CVSS vs HSVSS comparison study | 🔜 Phase 3 |
+| Journal paper manuscript | 🔜 Phase 4 |
+
+**Active development:** Transitioning from conference paper (vulnerability detection focus) to journal paper (healthcare-specific risk prioritization with HSVSS as the core contribution). See `context/journal-paper/the-plan.md` for the full roadmap.
 
 ## Setup
 
@@ -10,7 +26,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-**Requirements:** Python 3.9+, NVIDIA GPU with CUDA support.
+**Requirements:** Python 3.14+, NVIDIA GPU with CUDA support (8 GB VRAM sufficient).
 
 ## Configuration
 
@@ -84,7 +100,7 @@ python -m src.predict path/to/directory/ --top-k 3
 streamlit run src/app.py
 ```
 
-Interactive Streamlit interface for uploading C/C++ code, selecting models, and viewing CWE predictions with confidence scores.
+Interactive Streamlit interface for uploading C/C++ code, selecting models, viewing CWE predictions with confidence scores, and healthcare risk assessment.
 
 ## Experiments
 
@@ -98,13 +114,42 @@ Interactive Streamlit interface for uploading C/C++ code, selecting models, and 
 | F | Union (187 CWEs) | 4 encoders | 6 |
 | G | Juliet | BiLSTM-Attention | 10 |
 
-## Healthcare Risk Pipeline
+## Healthcare Risk Prioritization
 
-`src/risk.py` implements a 3-stage prioritization pipeline:
+### Current: 3-Stage Baseline (`src/risk.py`)
 
 1. **CWE → LINDDUN** — Maps vulnerabilities to privacy threat categories
 2. **LINDDUN → Control Domains** — Maps threats to healthcare policy domains (access control, audit, confidentiality)
 3. **Risk Scoring** — Weighted composite score based on severity, exploitability, detectability, scope, and compliance
+
+### Upcoming: HSVSS 8-Dimensional Scoring Engine
+
+$$\text{HSVSS}(v) = \sum_{i=1}^{8} w_i \cdot D_i(v)$$
+
+| Dimension | Source |
+|---|---|
+| D1: Technical Severity | CVSS base score / CWE severity lookup |
+| D2: Exploitability Likelihood | HVSS `exploitability_model.pkl` (R²=0.967) |
+| D3: Patient Safety Impact | HVSS `xps_model.pkl` (R²=0.882) |
+| D4: PHI/PII Exposure Impact | LINDDUN + HVSS `xsd_model.pkl` (R²=0.804) |
+| D5: Clinical Workflow Disruption | CWE→workflow mapping (new) |
+| D6: Clinical Data Integrity | LINDDUN + integrity analysis |
+| D7: Interoperability Impact | CWE→API/integration mapping (new) |
+| D8: Regulatory Compliance Impact | HIPAA/GDPR/FDA mapping |
+
+### HVSS ML Models
+
+Five retrained models (StandardScaler + MLP(256,128)) at `src/insights/hvss-calculator-lab-main/models/`:
+
+| Model | Features | R² Score |
+|---|---|---|
+| Exploitability | 4 | 0.967 |
+| Patient Safety (XPS) | 5 | 0.882 |
+| Sensitive Data (XSD) | 5 | 0.804 |
+| Hospital Breach (XHB) | 5 | 0.958 |
+| CIA Impact (XCIA) | 7 | 0.218 |
+
+Retrain with: `python scripts/retrain_hvss_models.py`
 
 ## Project Structure
 
@@ -116,8 +161,9 @@ src/
 ├── train_qlora.py      # QLoRA fine-tuning
 ├── evaluate.py         # Metrics and error analysis
 ├── predict.py          # CLI inference
-├── risk.py             # Healthcare risk prioritization
+├── risk.py             # Healthcare risk prioritization (3-stage baseline)
 ├── utils.py            # Seed, config, device, logging helpers
+├── insights/           # HVSS calculator + retrained ML models
 └── data/
     ├── extract_dataset.py   # Juliet → parquet
     ├── extract_bigvul.py    # Big-Vul CSV → parquet
@@ -125,4 +171,21 @@ src/
     ├── split.py             # Template-aware splitting
     ├── dataset.py           # PyTorch Dataset / DataLoaders
     └── merge_datasets.py    # Combine datasets
+scripts/
+├── retrain_hvss_models.py   # Reproducible HVSS model retraining
+context/
+└── journal-paper/
+    └── the-plan.md          # Full HSVSS implementation roadmap
 ```
+
+## Roadmap
+
+| Phase | Timeline | Deliverable |
+|---|---|---|
+| Phase 1: Reframing | Week 1–2 | HSVSS formal definition, architecture design |
+| Phase 2: Implementation | Week 3–5 | `hsvss.py`, `hvss_adapter.py`, `compliance.py`, mappings |
+| Phase 3: Evaluation | Week 6–9 | CVSS vs HSVSS comparison, ablation, case studies |
+| Phase 4: Writing | Week 8–12 | Full journal manuscript (~20 pages) |
+| Phase 5: Submission | Week 12–14 | Camera-ready, reproducibility package |
+
+Target journals: *Computers & Security* (IF 5.4), *Int. J. Critical Infrastructure Protection* (IF 5.3), *Journal of Medical Systems* (IF 5.7).
