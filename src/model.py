@@ -12,7 +12,8 @@ Architecture (QLoRA models):
 
 import torch
 import torch.nn as nn
-from transformers import AutoModel, AutoModelForSequenceClassification, AutoTokenizer, BitsAndBytesConfig, T5EncoderModel
+from transformers import AutoModel, AutoModelForSequenceClassification, AutoTokenizer, BitsAndBytesConfig
+from transformers.models.t5.modeling_t5 import T5EncoderModel
 
 # Model families that use T5EncoderModel (encoder-only).
 # All others default to AutoModel.

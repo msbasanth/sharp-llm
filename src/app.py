@@ -13,13 +13,37 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.express as px
-import torch
-from transformers import AutoTokenizer
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from src.predict import load_model, predict_code, predict_file, load_qlora_model, predict_code_qlora, load_dl_model, predict_code_dl
-from src.gemma_predict import load_zero_shot_model, predict_code_zero_shot
-from src.utils import load_config, get_device, load_label_map, count_parameters
+
+# Torch/transformers imports are deferred — they require torch._dynamo which
+# has compatibility issues with Python 3.14.  The UI loads without them;
+# model inference features gracefully degrade if unavailable.
+try:
+    import torch
+    from transformers import AutoTokenizer
+    from src.predict import load_model, predict_code, predict_file, load_qlora_model, predict_code_qlora, load_dl_model, predict_code_dl
+    from src.gemma_predict import load_zero_shot_model, predict_code_zero_shot
+    from src.utils import load_config, get_device, load_label_map, count_parameters
+    _TORCH_AVAILABLE = True
+except Exception as _torch_err:
+    _TORCH_AVAILABLE = False
+    _TORCH_ERROR = str(_torch_err)
+    # Provide stubs so the rest of the app can reference these names
+    torch = None
+    AutoTokenizer = None
+    def load_model(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def predict_code(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def predict_file(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def load_qlora_model(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def predict_code_qlora(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def load_dl_model(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def predict_code_dl(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def load_zero_shot_model(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    def predict_code_zero_shot(*a, **kw): raise RuntimeError(f"torch unavailable: {_TORCH_ERROR}")
+    from src.utils import load_config, load_label_map, count_parameters
+    def get_device(): return "cpu"
+
 from src.risk import HealthcareRiskPrioritizer
 
 # CWE short descriptions for the 118 classes in the Juliet Test Suite
@@ -639,6 +663,9 @@ st.set_page_config(
 )
 
 st.title("CWE Vulnerability Detector")
+
+if not _TORCH_AVAILABLE:
+    st.warning(f"⚠️ PyTorch unavailable — model inference disabled. Healthcare risk assessment still works.\n\nError: {_TORCH_ERROR}")
 
 # Load available models from config
 config_base = load_config("config.yaml")

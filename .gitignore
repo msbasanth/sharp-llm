@@ -3,7 +3,10 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
-context/
+context/*
+!context/journal-paper/
+context/journal-paper/*
+!context/journal-paper/the-plan.md
 venv/
 env/
 
