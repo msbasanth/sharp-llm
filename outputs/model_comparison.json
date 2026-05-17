@@ -60,6 +60,22 @@
     "Latency (ms)": 23.46
   },
   {
+    "Model": "BiLSTM-Attention",
+    "model_id": "bilstm-attention",
+    "dl_model": true,
+    "Parameters": 6537335,
+    "Size (MB)": 74.8,
+    "Best Epoch": 9,
+    "Training Time (s)": 6496.8,
+    "Accuracy": 0.9982180246803581,
+    "Precision": 0.9996868050988129,
+    "Recall": 0.9989768110386595,
+    "F1-Score": 0.9993266158561057,
+    "MCC": 0.9981424780271627,
+    "FPR": 1.6127458530256323e-05,
+    "Latency (ms)": 10.01
+  },
+  {
     "Model": "CodeGemma-2B (Zero-shot)",
     "model_id": "google/codegemma-2b",
     "inference_only": true,

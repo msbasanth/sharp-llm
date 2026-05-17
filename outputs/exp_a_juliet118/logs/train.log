@@ -49,3 +49,35 @@
 2026-04-27 11:03:38 | INFO     | No improvement. Patience: 1/1
 2026-04-27 11:03:38 | INFO     | Early stopping triggered
 2026-04-27 11:03:38 | INFO     | Training complete. Best Macro-F1: 0.9530
+2026-05-06 13:09:19 | INFO     | Using device: cuda
+2026-05-06 13:09:19 | INFO     | Loading data...
+2026-05-06 13:09:22 | INFO     | Train batches: 10342, Test batches: 2806
+2026-05-06 13:09:24 | INFO     | Model parameters — total: 35,377,014, trainable: 35,377,014
+2026-05-06 13:09:24 | INFO     | Mixed precision (fp16): True
+2026-05-06 13:09:24 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\codet5-small\latest.pt
+2026-05-06 13:09:26 | INFO     | Resumed at epoch 2, best F1: 0.9370
+2026-05-06 13:09:26 | INFO     | Training complete. Best Macro-F1: 0.9370
+2026-05-06 13:10:04 | INFO     | Using device: cuda
+2026-05-06 13:10:04 | INFO     | Loading data...
+2026-05-06 13:10:05 | INFO     | Train batches: 10342, Test batches: 2806
+2026-05-06 13:10:08 | INFO     | Model parameters — total: 109,697,782, trainable: 109,697,782
+2026-05-06 13:10:08 | INFO     | Mixed precision (fp16): True
+2026-05-06 13:10:08 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\codet5-base\latest.pt
+2026-05-06 13:10:12 | INFO     | Resumed at epoch 2, best F1: 0.9345
+2026-05-06 13:10:12 | INFO     | Training complete. Best Macro-F1: 0.9345
+2026-05-06 13:10:56 | INFO     | Using device: cuda
+2026-05-06 13:10:56 | INFO     | Loading data...
+2026-05-06 13:10:57 | INFO     | Train batches: 10342, Test batches: 2806
+2026-05-06 13:11:01 | INFO     | Model parameters — total: 124,736,374, trainable: 124,736,374
+2026-05-06 13:11:01 | INFO     | Mixed precision (fp16): True
+2026-05-06 13:11:01 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\codebert-base\latest.pt
+2026-05-06 13:11:06 | INFO     | Resumed at epoch 2, best F1: 0.9493
+2026-05-06 13:11:06 | INFO     | Training complete. Best Macro-F1: 0.9493
+2026-05-06 13:11:42 | INFO     | Using device: cuda
+2026-05-06 13:11:42 | INFO     | Loading data...
+2026-05-06 13:11:42 | INFO     | Train batches: 10342, Test batches: 2806
+2026-05-06 13:11:43 | INFO     | Model parameters — total: 124,736,374, trainable: 124,736,374
+2026-05-06 13:11:43 | INFO     | Mixed precision (fp16): True
+2026-05-06 13:11:43 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\graphcodebert-base\latest.pt
+2026-05-06 13:11:44 | INFO     | Resumed at epoch 2, best F1: 0.9530
+2026-05-06 13:11:44 | INFO     | Training complete. Best Macro-F1: 0.9530
