@@ -151,7 +151,7 @@ Detected Vulnerability (CWE + confidence + code context)
 
 Write a 1-page contribution statement distinguishing from prior art:
 - **C3-VULMAP** = healthcare privacy-aware detection dataset (prior art, used as input)
-- **HVSS** = medical-device risk calculator (prior art, adapted for software)
+- **HVSS** = medical-device risk calculator by Edwards Lifesciences Product Security Group / HVSS Working Group (2023), open-source at github.com/ewprodsec/hvss-calculator-lab (prior art, adapted for software)
 - **HSVSS** = **our contribution** — healthcare *software* vulnerability scoring with 8 dimensions, integrating both HVSS clinical tracks and LINDDUN privacy tracks into a unified prioritization engine
 
 ### Step 1.2 — Define HSVSS formally
