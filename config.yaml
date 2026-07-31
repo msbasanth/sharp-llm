@@ -3,65 +3,64 @@
 #            with Template-Aware Dataset Splitting"
 
 # Model Selection
+# Default HuggingFace model identifier used for training/inference when no model is explicitly selected
 model_name: microsoft/graphcodebert-base
+# List of all models available in the Streamlit UI model selector
 available_models:
-  - name: "CodeT5-Small"
+  - name: "CodeT5-Small"              # 60M params, encoder-decoder, code understanding
     model_id: "Salesforce/codet5-small"
-  - name: "CodeT5-Base"
+  - name: "CodeT5-Base"               # 220M params, encoder-decoder, stronger code reasoning
     model_id: "Salesforce/codet5-base"
-  - name: "CodeBERT-Base"
+  - name: "CodeBERT-Base"             # 125M params, encoder-only, pre-trained on code+NL
     model_id: "microsoft/codebert-base"
-  - name: "GraphCodeBERT-Base"
+  - name: "GraphCodeBERT-Base"        # 125M params, encoder-only, uses data-flow graph structure
     model_id: "microsoft/graphcodebert-base"
-  - name: "CodeGemma-2B (QLoRA)"
-    model_id: "google/codegemma-1.1-2b"
-    qlora: true
-  - name: "CodeGemma-2B (Zero-shot)"
+  - name: "CodeGemma-2B (Zero-shot)"  # 2.5B params, no fine-tuning, prompt-based CWE classification
     model_id: "google/codegemma-2b"
-    inference_only: true
-  - name: "Gemma 4 E2B IT (Zero-shot)"
+    inference_only: true              # Skip training; used only for zero-shot evaluation
+  - name: "Gemma 4 E2B IT (Zero-shot)" # 5.1B params, instruction-tuned, strongest zero-shot
     model_id: "google/gemma-4-E2B-it"
     inference_only: true
-  - name: "BiLSTM-Attention"
-    model_id: "bilstm-attention"
-    dl_model: true
+# Total number of CWE vulnerability classes in the label map (Juliet 118-class subset)
 num_classes: 118
 
 # Tokenization
+# Maximum token sequence length; inputs are truncated/padded to this length
 max_length: 256
 
-# Training
-batch_size: 8
-learning_rate: 5.0e-5
-epochs: 2
-weight_decay: 0.01
-dropout: 0.1
-seed: 42
-fp16: true
-gradient_accumulation_steps: 1
+# Training Hyperparameters
+batch_size: 8                    # Samples per forward pass (limited by GPU VRAM)
+learning_rate: 5.0e-5            # AdamW optimizer LR; 5e-5 is standard for BERT fine-tuning
+epochs: 2                        # Max training epochs (early stopping may halt sooner)
+weight_decay: 0.01               # L2 regularization to prevent overfitting
+dropout: 0.1                     # Dropout probability on classification head
+seed: 42                         # Random seed for reproducibility across runs
+fp16: true                       # Mixed-precision (float16) training for speed + memory savings
+gradient_accumulation_steps: 1   # Effective batch = batch_size × this value
 
 # Early stopping
+# Number of epochs without F1 improvement before stopping training
 patience: 1
 
 # DataLoader
-num_workers: 0
-pin_memory: true
+num_workers: 0                   # Subprocess workers for data loading (0 = main process only)
+pin_memory: true                 # Pin tensors in CPU memory for faster GPU transfer
 
 # Paths
-dataset_root: datasets/2017-10-01-juliet-test-suite-for-c-cplusplus-v1-3/C/testcases
-samples_path: data/processed/samples.parquet
-train_path: data/processed/train.parquet
-test_path: data/processed/test.parquet
-label_map_path: data/processed/label_map.json
-checkpoint_dir: outputs/checkpoints
-log_dir: outputs/logs
+dataset_root: datasets/2017-10-01-juliet-test-suite-for-c-cplusplus-v1-3/C/testcases  # Raw C/C++ source files
+samples_path: data/processed/samples.parquet       # Extracted code+label pairs (all samples)
+train_path: data/processed/train.parquet           # Training split (template-aware stratified)
+test_path: data/processed/test.parquet             # Test split (no template leakage)
+label_map_path: data/processed/label_map.json      # CWE-ID → integer class index mapping
+checkpoint_dir: outputs/checkpoints                # Saved model weights (best.pt per model)
+log_dir: outputs/logs                              # TensorBoard events + epoch metrics JSON
 
-# QLoRA Configuration
+# QLoRA Configuration (Quantized Low-Rank Adaptation for large models)
 qlora:
-  lora_rank: 16
-  lora_alpha: 32
-  lora_dropout: 0.05
-  target_modules:
+  lora_rank: 16                    # Rank of low-rank matrices; higher = more capacity, more VRAM
+  lora_alpha: 32                   # Scaling factor (alpha/rank = effective LR multiplier)
+  lora_dropout: 0.05               # Dropout on LoRA layers to prevent overfitting
+  target_modules:                  # Which linear layers to apply LoRA adapters to
     - q_proj
     - k_proj
     - v_proj
@@ -69,42 +68,44 @@ qlora:
     - gate_proj
     - up_proj
     - down_proj
-  quant_type: nf4
-  use_double_quant: true
-  gradient_checkpointing: true
-  per_device_batch_size: 2
-  gradient_accumulation_steps: 4
-  learning_rate: 2.0e-4
-  epochs: 5
-  patience: 2
+  quant_type: nf4                  # 4-bit NormalFloat quantization (bitsandbytes)
+  use_double_quant: true           # Quantize the quantization constants for extra memory savings
+  gradient_checkpointing: true     # Trade compute for memory by recomputing activations
+  per_device_batch_size: 2         # Small batch to fit 2B+ model in VRAM
+  gradient_accumulation_steps: 4   # Effective batch = 2 × 4 = 8
+  learning_rate: 2.0e-4            # Higher LR typical for LoRA (only adapter weights update)
+  epochs: 5                        # More epochs needed since fewer params are trainable
+  patience: 2                      # Early stopping patience for QLoRA training
 
-# Deep Learning (non-transformer) model configuration
+# Deep Learning (non-transformer) model configuration — BiLSTM-Attention baseline
 dl:
-  # Tokenizer to reuse for vocabulary (BPE tokenizer from CodeT5)
-  tokenizer_name: Salesforce/codet5-small
-  embedding_dim: 128
-  hidden_dim: 256
-  num_layers: 2
-  dropout: 0.3
-  learning_rate: 1.0e-3
-  epochs: 10
-  patience: 3
-  batch_size: 32
+  tokenizer_name: Salesforce/codet5-small  # Reuse BPE vocabulary from CodeT5 for token IDs
+  embedding_dim: 128               # Token embedding vector dimension
+  hidden_dim: 256                   # BiLSTM hidden state size (per direction)
+  num_layers: 2                     # Stacked BiLSTM layers
+  dropout: 0.3                      # Higher dropout needed for smaller model capacity
+  learning_rate: 1.0e-3             # Adam LR; higher than transformers since training from scratch
+  epochs: 10                        # More epochs for convergence without pre-training
+  patience: 3                       # Early stopping patience
+  batch_size: 32                    # Larger batch feasible since model is much smaller
 
 # Logging
-log_every_n_steps: 100
+log_every_n_steps: 100             # Print training loss every N optimizer steps
 
-# Big-Vul Integration
-bigvul_csv_path: datasets/big-vul/MSR_data_cleaned.csv
-bigvul_samples_path: data/processed/bigvul_samples.parquet
-cwe_overlap_report_path: data/processed/cwe_overlap_report.json
+# Big-Vul Integration (real-world CVE dataset from MSR 2021)
+bigvul_csv_path: datasets/big-vul/MSR_data_cleaned.csv          # Raw Big-Vul CSV (180K+ functions)
+bigvul_samples_path: data/processed/bigvul_samples.parquet      # Processed Big-Vul code+CWE pairs
+cwe_overlap_report_path: data/processed/cwe_overlap_report.json # CWE overlap analysis between datasets
 
 # Experiment Configuration
 experiment:
-  # dataset_mode: juliet_only | overlap_only | expanded
+  # dataset_mode controls which data is used:
+  #   juliet_only  — NIST Juliet Test Suite only (synthetic, 118 CWEs)
+  #   overlap_only — Only CWEs shared between Juliet and Big-Vul
+  #   expanded     — Union of both datasets (187 CWEs)
   dataset_mode: juliet_only
   bigvul_samples_path: data/processed/bigvul_samples.parquet
-  combined_samples_path: data/processed/combined_samples.parquet
-  combined_train_path: data/processed/combined_train.parquet
-  combined_test_path: data/processed/combined_test.parquet
-  combined_label_map_path: data/processed/combined_label_map.json
+  combined_samples_path: data/processed/combined_samples.parquet    # Merged Juliet + Big-Vul samples
+  combined_train_path: data/processed/combined_train.parquet        # Combined training split
+  combined_test_path: data/processed/combined_test.parquet          # Combined test split
+  combined_label_map_path: data/processed/combined_label_map.json   # Extended label map (187 classes)

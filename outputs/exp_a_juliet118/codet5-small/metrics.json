@@ -3,5 +3,8 @@
   "macro_precision": 0.9349222606383145,
   "macro_recall": 0.9409744590633977,
   "macro_f1": 0.9369636626953873,
-  "weighted_f1": 0.9970863398759516
+  "weighted_f1": 0.9970863398759516,
+  "macro_f1_across_cwe_mean": 0.9369636626953874,
+  "macro_f1_across_cwe_std": 0.23409911190016655,
+  "macro_f1_class_count": 87
 }

@@ -83,6 +83,12 @@ ZERO_SHOT_MODELS = [
     ("CodeGemma-2B (Zero-shot)", "google/codegemma-2b"),
     ("Gemma 4 E2B IT (Zero-shot)", "google/gemma-4-E2B-it"),
 ]
+# Parameter and model-size metadata for zero-shot models.
+# Values are used in UI summaries because these models are inference-only.
+ZERO_SHOT_MODEL_META = {
+    "google/codegemma-2b": {"Parameters": 2510000000, "Size (MB)": 4677.0},
+    "google/gemma-4-E2B-it": {"Parameters": 5130000000, "Size (MB)": 9561.0},
+}
 N_ZERO_SHOT_SAMPLES = 500  # samples per zero-shot model
 
 config = load_config("config.yaml")
@@ -476,14 +482,15 @@ for display_name, model_id in ZERO_SHOT_MODELS:
     n_eval = len(_test_df)
     n_total = len(_test_df_full)
     sample_note = f"sampled {n_eval}/{n_total}" if n_eval < n_total else "full test set"
+    meta = ZERO_SHOT_MODEL_META.get(model_id, {})
 
     results.append({
         "Model": display_name,
         "model_id": model_id,
         "inference_only": True,
         "eval_samples": sample_note,
-        "Parameters": "N/A",
-        "Size (MB)": "N/A",
+        "Parameters": meta.get("Parameters", "N/A"),
+        "Size (MB)": meta.get("Size (MB)", "N/A"),
         "Best Epoch": "N/A",
         "Training Time (s)": "N/A",
         "Accuracy": acc,

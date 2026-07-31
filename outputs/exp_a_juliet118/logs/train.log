@@ -81,3 +81,19 @@
 2026-05-06 13:11:43 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\graphcodebert-base\latest.pt
 2026-05-06 13:11:44 | INFO     | Resumed at epoch 2, best F1: 0.9530
 2026-05-06 13:11:44 | INFO     | Training complete. Best Macro-F1: 0.9530
+2026-07-29 11:18:49 | INFO     | Using device: cpu
+2026-07-29 11:18:50 | INFO     | Loading data...
+2026-07-29 11:18:51 | INFO     | Train batches: 10342, Test batches: 2806
+2026-07-29 11:18:52 | INFO     | Model parameters — total: 35,377,014, trainable: 35,377,014
+2026-07-29 11:18:52 | INFO     | Mixed precision (fp16): False
+2026-07-29 11:18:52 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\codet5-small\latest.pt
+2026-07-29 11:18:52 | INFO     | Resumed at epoch 2, best F1: 0.9370
+2026-07-29 11:18:52 | INFO     | Training complete. Best Macro-F1: 0.9370
+2026-07-29 11:46:59 | INFO     | Using device: cpu
+2026-07-29 11:47:00 | INFO     | Loading data...
+2026-07-29 11:47:00 | INFO     | Train batches: 10342, Test batches: 2806
+2026-07-29 11:47:01 | INFO     | Model parameters — total: 109,697,782, trainable: 109,697,782
+2026-07-29 11:47:01 | INFO     | Mixed precision (fp16): False
+2026-07-29 11:47:01 | INFO     | Resuming from outputs\exp_a_juliet118\checkpoints\codet5-base\latest.pt
+2026-07-29 11:47:03 | INFO     | Resumed at epoch 2, best F1: 0.9345
+2026-07-29 11:47:03 | INFO     | Training complete. Best Macro-F1: 0.9345

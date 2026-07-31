@@ -9,6 +9,7 @@ Generates:
 import argparse
 import json
 import os
+import statistics
 import sys
 
 import truststore
@@ -73,6 +74,39 @@ def get_confused_pairs(y_true, y_pred, label_names, top_k=20):
 
     pairs.sort(key=lambda x: x["count"], reverse=True)
     return pairs[:top_k]
+
+
+def build_classification_report_summary(y_true, y_pred, label_names):
+    """Return the text report and class-wise F1 dispersion for present labels."""
+    present_labels = sorted(set(y_true) | set(y_pred))
+    present_names = [label_names[i] for i in present_labels]
+    report_dict = classification_report(
+        y_true,
+        y_pred,
+        labels=present_labels,
+        target_names=present_names,
+        zero_division=0,
+        output_dict=True,
+    )
+    report_text = classification_report(
+        y_true,
+        y_pred,
+        labels=present_labels,
+        target_names=present_names,
+        zero_division=0,
+    )
+    class_f1_scores = [report_dict[name]["f1-score"] for name in present_names]
+    macro_f1_mean = statistics.fmean(class_f1_scores) if class_f1_scores else 0.0
+    macro_f1_std = statistics.pstdev(class_f1_scores) if len(class_f1_scores) > 1 else 0.0
+
+    return {
+        "report_text": report_text,
+        "present_labels": present_labels,
+        "present_names": present_names,
+        "macro_f1_across_cwe_mean": macro_f1_mean,
+        "macro_f1_across_cwe_std": macro_f1_std,
+        "macro_f1_class_count": len(class_f1_scores),
+    }
 
 
 def main():
@@ -219,19 +253,22 @@ def main():
         "weighted_f1": f1_score(all_labels, all_preds, average="weighted", zero_division=0),
     }
 
+    report_summary = build_classification_report_summary(all_labels, all_preds, label_names)
+    metrics["macro_f1_across_cwe_mean"] = report_summary["macro_f1_across_cwe_mean"]
+    metrics["macro_f1_across_cwe_std"] = report_summary["macro_f1_across_cwe_std"]
+    metrics["macro_f1_class_count"] = report_summary["macro_f1_class_count"]
+
     logger.info("--- Overall Metrics ---")
     for k, v in metrics.items():
         logger.info(f"  {k}: {v:.4f}")
-
-    # Per-class report — only include labels that appear in test set
-    present_labels = sorted(set(all_labels) | set(all_preds))
-    present_names = [label_names[i] for i in present_labels]
-    report = classification_report(
-        all_labels, all_preds,
-        labels=present_labels,
-        target_names=present_names,
-        zero_division=0,
+    logger.info(
+        "  macro_f1_across_cwe: %.4f ± %.4f over %d classes",
+        metrics["macro_f1_across_cwe_mean"],
+        metrics["macro_f1_across_cwe_std"],
+        metrics["macro_f1_class_count"],
     )
+
+    report = report_summary["report_text"]
 
     # Confused pairs
     confused = get_confused_pairs(all_labels, all_preds, label_names)
@@ -278,6 +315,10 @@ def main():
                 "macro_f1": f1_score(src_labels, src_preds, average="macro", zero_division=0),
                 "weighted_f1": f1_score(src_labels, src_preds, average="weighted", zero_division=0),
             }
+            src_report_summary = build_classification_report_summary(src_labels, src_preds, label_names)
+            src_metrics["macro_f1_across_cwe_mean"] = src_report_summary["macro_f1_across_cwe_mean"]
+            src_metrics["macro_f1_across_cwe_std"] = src_report_summary["macro_f1_across_cwe_std"]
+            src_metrics["macro_f1_class_count"] = src_report_summary["macro_f1_class_count"]
 
             logger.info(f"  {src_name}: acc={src_metrics['accuracy']:.4f}, "
                         f"f1={src_metrics['macro_f1']:.4f}, n={src_metrics['sample_count']}")

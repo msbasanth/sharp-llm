@@ -84,6 +84,10 @@ python -m src.evaluate --config config.yaml --checkpoint outputs/checkpoints/cod
 
 Outputs: `metrics.json`, `classification_report.txt`, `confusion_pairs.csv`.
 
+`metrics.json` includes overall macro/weighted metrics plus `macro_f1_across_cwe_mean`,
+`macro_f1_across_cwe_std`, and `macro_f1_class_count` so Macro-F1 can be reported as
+variation across CWE classes (for example, `0.84 ± 0.07`) without retraining multiple seeds.
+
 ## Prediction
 
 ```bash

@@ -641,6 +641,76 @@ The resulting score is then mapped to an ordinal priority level such as \textit{
 
 It is important to note that this step is intended for decision support rather than formal legal assessment. The purpose of risk prioritization is to strengthen remediation planning by translating vulnerability predictions into ranked findings that better reflect the practical concerns of healthcare software systems. In this way, SHARP-LLM extends conventional source code vulnerability detection with a structured prioritization layer that is more suitable for real-world healthcare software environments.
 
+Fig.~\ref{fig:risk_pipeline} illustrates the three-stage risk prioritization pipeline with a concrete example. Given a detected CWE-119 (Buffer Overflow), the framework first maps it to the LINDDUN threat type \emph{Information Disclosure}, then identifies the policy-relevant control domain \emph{Confidentiality Protection}, and finally assigns a \emph{Critical} priority level. This demonstrates how a low-level code weakness is systematically elevated into a healthcare-actionable risk finding.
+
+\begin{figure}[t]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=5mm and 8mm,
+    stage/.style={
+        draw=black!65,
+        thick,
+        rounded corners=3mm,
+        align=center,
+        minimum width=3.2cm,
+        minimum height=1.0cm,
+        font=\footnotesize\bfseries
+    },
+    example/.style={
+        draw=black!40,
+        dashed,
+        rounded corners=2mm,
+        align=center,
+        minimum width=2.8cm,
+        minimum height=0.7cm,
+        font=\footnotesize\itshape
+    },
+    arrow/.style={-Latex, thick, black!70},
+    exarrow/.style={-Latex, thick, red!60!black},
+    stlabel/.style={font=\scriptsize\bfseries, text=black!60, above}
+]
+
+% --- Stage labels row ---
+\node[stage, fill=cyan!12] (cwe) {CWE Detection\\(Vulnerability Class)};
+\node[stage, fill=orange!13, right=12mm of cwe] (linddun) {LINDDUN Mapping\\(Risk Categories)};
+\node[stage, fill=purple!12, right=12mm of linddun] (control) {Control Domains\\(Policy Alignment)};
+\node[stage, fill=green!13, right=12mm of control] (priority) {Priority Score\\(Ranked Output)};
+
+% --- Arrows between stages ---
+\draw[arrow] (cwe) -- node[stlabel] {$f(\cdot)$} (linddun);
+\draw[arrow] (linddun) -- node[stlabel] {$g(\cdot)$} (control);
+\draw[arrow] (control) -- node[stlabel] {$h(\cdot)$} (priority);
+
+% --- Concrete example row ---
+\node[example, fill=cyan!6, below=8mm of cwe] (ex_cwe) {CWE-119\\Buffer Overflow};
+\node[example, fill=orange!8, below=8mm of linddun] (ex_linddun) {Information\\Disclosure};
+\node[example, fill=purple!8, below=8mm of control] (ex_control) {Confidentiality\\Protection};
+\node[example, fill=green!8, below=8mm of priority] (ex_priority) {\textbf{Critical}};
+
+% --- Arrows between examples ---
+\draw[exarrow] (ex_cwe) -- (ex_linddun);
+\draw[exarrow] (ex_linddun) -- (ex_control);
+\draw[exarrow] (ex_control) -- (ex_priority);
+
+% --- Vertical dashed links from stage to example ---
+\draw[densely dotted, black!40] (cwe) -- (ex_cwe);
+\draw[densely dotted, black!40] (linddun) -- (ex_linddun);
+\draw[densely dotted, black!40] (control) -- (ex_control);
+\draw[densely dotted, black!40] (priority) -- (ex_priority);
+
+% --- Stage number badges ---
+\node[fill=cyan!25, circle, inner sep=1.5pt, font=\scriptsize\bfseries, above=2mm of cwe] {1};
+\node[fill=orange!25, circle, inner sep=1.5pt, font=\scriptsize\bfseries, above=2mm of linddun] {2};
+\node[fill=purple!25, circle, inner sep=1.5pt, font=\scriptsize\bfseries, above=2mm of control] {3};
+\node[fill=green!25, circle, inner sep=1.5pt, font=\scriptsize\bfseries, above=2mm of priority] {4};
+
+\end{tikzpicture}%
+}
+\caption{Three-stage healthcare risk prioritization pipeline with a concrete example: CWE-119 (Buffer Overflow) is mapped through LINDDUN privacy threat categories to policy-relevant control domains, producing a final priority level.}
+\label{fig:risk_pipeline}
+\end{figure}
+
 % ===========================================================================
 % Section 6 — Experimental Results
 % ===========================================================================

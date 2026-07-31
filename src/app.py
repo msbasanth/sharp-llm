@@ -575,24 +575,6 @@ EXPERIMENT_CONFIGS = {
             "Tests whether additional training improves convergence on the combined dataset."
         ),
     },
-    "Experiment G — BiLSTM-Attention DL Baseline": {
-        "id": "exp_g_bilstm",
-        "dataset_key": "Juliet Full (118 CWEs)",
-        "train_path": "data/processed/train.parquet",
-        "test_path": "data/processed/test.parquet",
-        "label_map": "data/processed/label_map.json",
-        "checkpoint_base": "outputs/exp_g_bilstm/checkpoints",
-        "logs_dir": "outputs/exp_g_bilstm/logs",
-        "eval_dir": "outputs/exp_g_bilstm",
-        "models": ["bilstm-attention"],
-        "description": (
-            "Traditional Deep Learning baseline using a **BiLSTM with Self-Attention** "
-            "architecture (~2-5M parameters). Trained on the full Juliet C/C++ 1.3 "
-            "Test Suite with **118 CWE categories**, **82,736 training** and **22,447 test** "
-            "samples. Uses CodeT5's BPE tokenizer for consistent tokenization. "
-            "Serves as a DL baseline to benchmark against transformer-based models."
-        ),
-    },
 }
 
 MODEL_DISPLAY_NAMES = {
@@ -600,7 +582,6 @@ MODEL_DISPLAY_NAMES = {
     "codet5-base": "CodeT5-Base",
     "codebert-base": "CodeBERT-Base",
     "graphcodebert-base": "GraphCodeBERT-Base",
-    "bilstm-attention": "BiLSTM-Attention",
 }
 
 
@@ -1230,9 +1211,31 @@ if nav_page == "Experiments":
     st.subheader(f"Per-CWE Performance — {selected_model_display}")
 
     report_df = load_classification_report(exp_cfg["eval_dir"], selected_variant)
+    eval_metrics = load_eval_metrics(exp_cfg["eval_dir"], selected_variant)
 
     if report_df is not None:
         report_df["Description"] = report_df["CWE"].apply(get_description)
+
+        macro_f1_mean = None
+        macro_f1_std = None
+        macro_f1_class_count = len(report_df)
+        if eval_metrics:
+            macro_f1_mean = eval_metrics.get("macro_f1_across_cwe_mean")
+            macro_f1_std = eval_metrics.get("macro_f1_across_cwe_std")
+            macro_f1_class_count = eval_metrics.get("macro_f1_class_count", macro_f1_class_count)
+
+        if macro_f1_mean is None or macro_f1_std is None:
+            macro_f1_mean = float(report_df["f1"].mean())
+            macro_f1_std = float(report_df["f1"].std(ddof=0)) if len(report_df) > 1 else 0.0
+            st.caption(
+                f"Macro-F1 across CWE classes (estimated from displayed report rows): "
+                f"{macro_f1_mean:.4f} +/- {macro_f1_std:.4f} across {macro_f1_class_count} classes."
+            )
+        else:
+            st.caption(
+                f"Macro-F1 across CWE classes: {macro_f1_mean:.4f} +/- {macro_f1_std:.4f} "
+                f"across {macro_f1_class_count} classes."
+            )
 
         # 3a: Average Precision vs CWE Category
         st.markdown("**Average Precision by CWE Category**")
