@@ -12,7 +12,7 @@ env/
 
 # Data (large files)
 datasets/
-data/processed/*.parquet
+# data/processed/*.parquet  ← unblocked for Kaggle runner (15 MB, private repo)
 
 # Outputs — large binary files only
 outputs/checkpoints/
