@@ -1,0 +1,16 @@
+{
+  "id": "msbasanth/sharp-llm-icmlde-five-seed-runner",
+  "title": "SHARP-LLM ICMLDE Five-Seed Runner",
+  "code_file": "kaggle_icmlde_runner.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "accelerator": "nvidiaTeslaT4x2",
+  "dataset_sources": [
+    "msbasanth/sharp-llm-processed-data",
+    "msbasanth/sharp-llm-icmlde-outputs"
+  ],
+  "kernel_sources": []
+}
