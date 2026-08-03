@@ -12,7 +12,18 @@ env/
 
 # Data (large files)
 datasets/
-# data/processed/*.parquet  ← unblocked for Kaggle runner (15 MB, private repo)
+data/processed/*.parquet
+!data/processed/train.parquet
+!data/processed/test.parquet
+
+# Temporary Kaggle debug folders
+_kaggle_debug/
+_log_only/
+_data_upload/
+_v20_log/
+
+# Stray notebook copy at repo root
+colab_icmlde_runner.ipynb
 
 # Outputs — large binary files only
 outputs/checkpoints/

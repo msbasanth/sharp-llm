@@ -12,6 +12,7 @@ A framework for source code vulnerability detection, CWE classification, and **h
 | Healthcare risk prioritization (`src/risk.py`) | ✅ Complete (5-weight baseline) |
 | HVSS ML models (retrained for sklearn 1.8.0) | ✅ Complete |
 | Streamlit web UI | ✅ Running |
+| ICMLDE five-seed reproducibility pipeline | 🚧 In progress |
 | HSVSS 8-dimensional scoring engine | 🔜 Phase 2 (next) |
 | CVSS vs HSVSS comparison study | 🔜 Phase 3 |
 | Journal paper manuscript | 🔜 Phase 4 |
@@ -87,6 +88,28 @@ Outputs: `metrics.json`, `classification_report.txt`, `confusion_pairs.csv`.
 `metrics.json` includes overall macro/weighted metrics plus `macro_f1_across_cwe_mean`,
 `macro_f1_across_cwe_std`, and `macro_f1_class_count` so Macro-F1 can be reported as
 variation across CWE classes (for example, `0.84 ± 0.07`) without retraining multiple seeds.
+
+### ICMLDE Reproducibility (5 seeds)
+
+Run the paper-scoped matrix (4 encoder models × 5 seeds) with restartable status tracking:
+
+```bash
+python scripts/run_icmlde_reproducibility.py --config config.yaml
+```
+
+Aggregate mean ± standard deviation and paired significance tests:
+
+```bash
+python scripts/aggregate_icmlde_results.py --config config.yaml
+```
+
+Artifacts are written under `outputs/icmlde2026/juliet118/` including:
+
+- `run_manifest.json`
+- `status.json`
+- `summary/aggregate_metrics.json`
+- `summary/significance_tests.json`
+- `summary/manuscript_table_model_comparison.csv`
 
 ## Prediction
 
@@ -177,9 +200,12 @@ src/
     └── merge_datasets.py    # Combine datasets
 scripts/
 ├── retrain_hvss_models.py   # Reproducible HVSS model retraining
+├── run_icmlde_reproducibility.py  # Restartable ICMLDE seed runner (status-aware)
+└── aggregate_icmlde_results.py    # Mean±std summaries + paired significance tests
 context/
 └── journal-paper/
-    └── the-plan.md          # Full HSVSS implementation roadmap
+   ├── the-plan.md          # Full HSVSS implementation roadmap
+   └── icmlde-five-seed-reproducibility-plan.md  # ICMLDE checkpointed run plan
 ```
 
 ## Roadmap

@@ -636,6 +636,38 @@ def load_eval_metrics(eval_dir: str, model_variant: str):
     return None
 
 
+@st.cache_data
+def load_json_if_exists(path: str):
+    """Load JSON file if present, else return None."""
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            return json.load(f)
+    return None
+
+
+@st.cache_data
+def load_icmlde_artifacts(output_root: str):
+    """Load ICMLDE run manifest, status, and summary artifacts."""
+    manifest = load_json_if_exists(os.path.join(output_root, "run_manifest.json"))
+    status = load_json_if_exists(os.path.join(output_root, "status.json"))
+    aggregate = load_json_if_exists(os.path.join(output_root, "summary", "aggregate_metrics.json"))
+    significance = load_json_if_exists(os.path.join(output_root, "summary", "significance_tests.json"))
+    table_csv = os.path.join(output_root, "summary", "manuscript_table_model_comparison.csv")
+    table_df = pd.read_csv(table_csv) if os.path.exists(table_csv) else None
+    raw_csv = os.path.join(output_root, "summary", "raw_seed_metrics.csv")
+    raw_df = pd.read_csv(raw_csv) if os.path.exists(raw_csv) else None
+    return {
+        "manifest": manifest,
+        "status": status,
+        "aggregate": aggregate,
+        "significance": significance,
+        "table_df": table_df,
+        "raw_df": raw_df,
+        "table_csv": table_csv,
+        "raw_csv": raw_csv,
+    }
+
+
 # --- Page config ---
 st.set_page_config(
     page_title="CWE Vulnerability Detector",
@@ -666,7 +698,7 @@ dl_model_ids = {m["model_id"] for m in available_models if m.get("dl_model", Fal
 st.sidebar.title("Navigation")
 nav_page = st.sidebar.radio(
     "Go to",
-    ["The Detector", "Metrics", "Experiments", "Test Environment"],
+    ["The Detector", "Metrics", "Experiments", "ICMLDE Experiments", "Test Environment"],
     index=0,
     label_visibility="collapsed",
 )
@@ -1461,6 +1493,104 @@ if nav_page == "Experiments":
             "No cross-experiment report found. "
             "Run `python compare_bigvul_impact.py` to generate."
         )
+
+# ==================== ICMLDE EXPERIMENTS ====================
+if nav_page == "ICMLDE Experiments":
+    st.header("ICMLDE Experiments")
+    icmlde_cfg = config.get("icmlde", {})
+    output_root = icmlde_cfg.get("output_root", "outputs/icmlde2026/juliet118")
+    artifacts = load_icmlde_artifacts(output_root)
+
+    st.caption(f"Output root: {output_root}")
+
+    tab_overview, tab_status, tab_summary, tab_significance = st.tabs(
+        ["Overview", "Run Status", "Aggregate Metrics", "Significance"]
+    )
+
+    with tab_overview:
+        manifest = artifacts["manifest"]
+        if not manifest:
+            st.warning(
+                "ICMLDE manifest not found. Run `python scripts/run_icmlde_reproducibility.py` "
+                "to create `run_manifest.json` and `status.json`."
+            )
+        else:
+            st.markdown("**Run Manifest**")
+            mcol1, mcol2, mcol3, mcol4 = st.columns(4)
+            mcol1.metric("Tag Prefix", manifest.get("tag_prefix", "ICMLDE:"))
+            mcol2.metric("Seeds", str(len(manifest.get("seeds", []))))
+            mcol3.metric("Models", str(len(manifest.get("models", []))))
+            mcol4.metric("Split Seed", str(manifest.get("split_seed", "N/A")))
+
+            st.markdown("**In-Scope Models**")
+            model_rows = []
+            for entry in manifest.get("models", []):
+                model_rows.append({
+                    "Tag": entry.get("tag"),
+                    "Model": entry.get("name"),
+                    "Model ID": entry.get("model_id"),
+                    "Variant": entry.get("variant"),
+                })
+            if model_rows:
+                st.dataframe(pd.DataFrame(model_rows), use_container_width=True, hide_index=True)
+
+    with tab_status:
+        status = artifacts["status"]
+        if not status or not status.get("runs"):
+            st.info("No ICMLDE status found yet.")
+        else:
+            run_rows = []
+            for _, run in status["runs"].items():
+                run_rows.append({
+                    "Tag": run.get("tag"),
+                    "Seed": run.get("seed"),
+                    "Variant": run.get("variant"),
+                    "Status": run.get("status"),
+                    "Step": run.get("last_completed_step"),
+                    "Updated At": run.get("updated_at"),
+                    "Error": run.get("error"),
+                })
+            status_df = pd.DataFrame(run_rows)
+            st.dataframe(status_df.sort_values(["Tag", "Seed"]), use_container_width=True, hide_index=True)
+
+            status_counts = status_df["Status"].value_counts().reset_index()
+            status_counts.columns = ["Status", "Count"]
+            fig_status = px.bar(status_counts, x="Status", y="Count", color="Status")
+            fig_status.update_layout(height=280, margin=dict(l=0, r=0, t=10, b=10))
+            st.plotly_chart(fig_status, use_container_width=True)
+
+    with tab_summary:
+        aggregate = artifacts["aggregate"]
+        table_df = artifacts["table_df"]
+        raw_df = artifacts["raw_df"]
+
+        if table_df is not None and len(table_df) > 0:
+            st.markdown("**Manuscript Summary Table**")
+            st.dataframe(table_df, use_container_width=True, hide_index=True)
+        elif aggregate and aggregate.get("models"):
+            st.markdown("**Aggregate Metrics (JSON)**")
+            st.dataframe(pd.DataFrame(aggregate.get("models", [])), use_container_width=True, hide_index=True)
+        else:
+            st.info(
+                "No ICMLDE aggregate summary found. Run `python scripts/aggregate_icmlde_results.py` "
+                "after seed runs complete."
+            )
+
+        if raw_df is not None and len(raw_df) > 0:
+            st.markdown("**Per-Seed Raw Metrics**")
+            st.dataframe(raw_df, use_container_width=True, hide_index=True)
+
+    with tab_significance:
+        significance = artifacts["significance"]
+        if significance and significance.get("results"):
+            sig_df = pd.DataFrame(significance["results"])
+            if "p_value" in sig_df.columns:
+                sig_df["p_value"] = sig_df["p_value"].apply(
+                    lambda x: f"{x:.6f}" if isinstance(x, (float, int)) else x
+                )
+            st.dataframe(sig_df, use_container_width=True, hide_index=True)
+        else:
+            st.info("No significance results found yet.")
 
 # ==================== TEST ENVIRONMENT ====================
 if nav_page == "Test Environment":

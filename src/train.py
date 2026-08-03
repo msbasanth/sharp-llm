@@ -71,6 +71,9 @@ def train(config: dict):
     logger.info(f"Using device: {device}")
 
     set_seed(config["seed"])
+    logger.info(f"Run seed: {config['seed']}")
+    if config.get("run_tag"):
+        logger.info(f"Run tag: {config['run_tag']}")
 
     # Data — support combined datasets via experiment config
     logger.info("Loading data...")
@@ -139,10 +142,13 @@ def train(config: dict):
     # TensorBoard
     writer = SummaryWriter(log_dir=config["log_dir"])
 
-    # Checkpoint directory (model-specific)
+    # Checkpoint directory (model-specific or explicit model dir)
     os.makedirs(config["checkpoint_dir"], exist_ok=True)
     model_variant = config["model_name"].split("/")[-1]
-    model_checkpoint_dir = os.path.join(config["checkpoint_dir"], model_variant)
+    if config.get("checkpoint_dir_is_model_dir", False):
+        model_checkpoint_dir = config["checkpoint_dir"]
+    else:
+        model_checkpoint_dir = os.path.join(config["checkpoint_dir"], model_variant)
     os.makedirs(model_checkpoint_dir, exist_ok=True)
 
     # Resume from checkpoint
@@ -168,7 +174,10 @@ def train(config: dict):
     training_start = time.time()
 
     # Per-epoch metrics log for before/after comparison
-    epoch_metrics_path = os.path.join(config["log_dir"], f"{model_variant}_epoch_metrics.json")
+    if config.get("log_dir_is_model_dir", False):
+        epoch_metrics_path = os.path.join(config["log_dir"], "epoch_metrics.json")
+    else:
+        epoch_metrics_path = os.path.join(config["log_dir"], f"{model_variant}_epoch_metrics.json")
     epoch_metrics_log = []
 
     # Running best trackers (each metric tracked independently)
@@ -294,6 +303,8 @@ def train(config: dict):
             json.dump({
                 "model": config["model_name"],
                 "model_variant": model_variant,
+                "seed": config.get("seed"),
+                "run_tag": config.get("run_tag"),
                 "epoch_metrics": epoch_metrics_log,
                 "best_metrics": best_metrics,
             }, f, indent=2)
@@ -311,6 +322,8 @@ def train(config: dict):
             "test_recall": test_rec,
             "best_metrics": best_metrics,
             "config": config,
+            "seed": config.get("seed"),
+            "run_tag": config.get("run_tag"),
             "training_time": total_training_time,
         }
         if scaler:
@@ -345,9 +358,17 @@ def main():
     parser.add_argument("--model", default=None, help="Override model_name from config")
     parser.add_argument("--epochs", type=int, default=None, help="Override max epochs from config")
     parser.add_argument("--patience", type=int, default=None, help="Override early-stopping patience from config")
+    parser.add_argument("--seed", type=int, default=None, help="Override run seed from config")
     parser.add_argument("--train-path", default=None, help="Override train parquet path")
     parser.add_argument("--test-path", default=None, help="Override test parquet path")
     parser.add_argument("--label-map-path", default=None, help="Override label map path")
+    parser.add_argument("--checkpoint-dir", default=None, help="Override checkpoint directory")
+    parser.add_argument("--log-dir", default=None, help="Override logging directory")
+    parser.add_argument("--checkpoint-dir-is-model-dir", action="store_true",
+                        help="Treat --checkpoint-dir as the final per-model directory (no variant suffix)")
+    parser.add_argument("--log-dir-is-model-dir", action="store_true",
+                        help="Treat --log-dir as the final per-model directory")
+    parser.add_argument("--run-tag", default=None, help="Optional run tag for metadata (e.g. ICMLDE:Juliet118:CodeT5-Base)")
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -361,12 +382,26 @@ def main():
         config["epochs"] = args.epochs
     if args.patience is not None:
         config["patience"] = args.patience
+    if args.seed is not None:
+        config["seed"] = args.seed
 
     # Experiment-specific output directories
     if args.experiment:
         config["checkpoint_dir"] = os.path.join("outputs", args.experiment, "checkpoints")
         config["log_dir"] = os.path.join("outputs", args.experiment, "logs")
         config["experiment_name"] = args.experiment
+
+    # Explicit output overrides (useful for seed-isolated runs)
+    if args.checkpoint_dir:
+        config["checkpoint_dir"] = args.checkpoint_dir
+    if args.log_dir:
+        config["log_dir"] = args.log_dir
+    if args.checkpoint_dir_is_model_dir:
+        config["checkpoint_dir_is_model_dir"] = True
+    if args.log_dir_is_model_dir:
+        config["log_dir_is_model_dir"] = True
+    if args.run_tag:
+        config["run_tag"] = args.run_tag
 
     # Override data paths from CLI
     if args.train_path:

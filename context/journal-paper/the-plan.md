@@ -62,6 +62,7 @@
 | Conference paper (.tex) | ✅ Done | Rewrite for journal |
 | Literature gap validation (443 papers) | ✅ Done | Strong evidence for 2 gaps |
 | HVSS model retraining script (`scripts/retrain_hvss_models.py`) | ✅ Created | Reproducibility |
+| ICMLDE reproducibility pipeline (`scripts/run_icmlde_reproducibility.py`, `scripts/aggregate_icmlde_results.py`) | 🚧 Implemented; execution pending | Five-seed mean±std reporting, paired significance tests, restartable status tracking |
 
 ---
 

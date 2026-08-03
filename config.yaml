@@ -109,3 +109,29 @@ experiment:
   combined_train_path: data/processed/combined_train.parquet        # Combined training split
   combined_test_path: data/processed/combined_test.parquet          # Combined test split
   combined_label_map_path: data/processed/combined_label_map.json   # Extended label map (187 classes)
+
+# ICMLDE reproducibility configuration (paper-scoped)
+icmlde:
+  output_root: outputs/icmlde2026/juliet118
+  split_seed: 42
+  seeds: [42, 43, 44, 45, 46]
+  train_path: data/processed/train.parquet
+  test_path: data/processed/test.parquet
+  label_map_path: data/processed/label_map.json
+  models:
+    - name: CodeT5-Small
+      model_id: Salesforce/codet5-small
+      variant: codet5-small
+      tag: ICMLDE:Juliet118:CodeT5-Small
+    - name: CodeT5-Base
+      model_id: Salesforce/codet5-base
+      variant: codet5-base
+      tag: ICMLDE:Juliet118:CodeT5-Base
+    - name: CodeBERT-Base
+      model_id: microsoft/codebert-base
+      variant: codebert-base
+      tag: ICMLDE:Juliet118:CodeBERT-Base
+    - name: GraphCodeBERT-Base
+      model_id: microsoft/graphcodebert-base
+      variant: graphcodebert-base
+      tag: ICMLDE:Juliet118:GraphCodeBERT-Base

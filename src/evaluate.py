@@ -8,6 +8,7 @@ Generates:
 
 import argparse
 import json
+import numbers
 import os
 import statistics
 import sys
@@ -23,6 +24,7 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix,
     f1_score,
+    matthews_corrcoef,
     precision_score,
     recall_score,
 )
@@ -76,6 +78,18 @@ def get_confused_pairs(y_true, y_pred, label_names, top_k=20):
     return pairs[:top_k]
 
 
+def compute_macro_fpr(y_true, y_pred, num_classes):
+    """Compute macro-averaged false positive rate across classes."""
+    cm = confusion_matrix(y_true, y_pred, labels=list(range(num_classes)))
+    fprs = []
+    for i in range(num_classes):
+        fp = cm[:, i].sum() - cm[i, i]
+        tn = cm.sum() - cm[i, :].sum() - cm[:, i].sum() + cm[i, i]
+        denom = fp + tn
+        fprs.append((fp / denom) if denom > 0 else 0.0)
+    return float(sum(fprs) / len(fprs)) if fprs else 0.0
+
+
 def build_classification_report_summary(y_true, y_pred, label_names):
     """Return the text report and class-wise F1 dispersion for present labels."""
     present_labels = sorted(set(y_true) | set(y_pred))
@@ -120,6 +134,9 @@ def main():
     parser.add_argument("--test-path", default=None, help="Override test parquet path")
     parser.add_argument("--label-map-path", default=None, help="Override label map JSON path")
     parser.add_argument("--output-dir", default=None, help="Override output directory")
+    parser.add_argument("--seed", type=int, default=None, help="Run seed metadata for traceability")
+    parser.add_argument("--experiment-tag", default=None,
+                        help="Optional run tag (e.g. ICMLDE:Juliet118:CodeT5-Base)")
     args = parser.parse_args()
 
     config = load_config(args.config)
@@ -251,6 +268,11 @@ def main():
         "macro_recall": recall_score(all_labels, all_preds, average="macro", zero_division=0),
         "macro_f1": f1_score(all_labels, all_preds, average="macro", zero_division=0),
         "weighted_f1": f1_score(all_labels, all_preds, average="weighted", zero_division=0),
+        "mcc": matthews_corrcoef(all_labels, all_preds),
+        "macro_fpr": compute_macro_fpr(all_labels, all_preds, config["num_classes"]),
+        "run_seed": args.seed if args.seed is not None else config.get("seed"),
+        "experiment_tag": args.experiment_tag,
+        "model_name": config.get("model_name"),
     }
 
     report_summary = build_classification_report_summary(all_labels, all_preds, label_names)
@@ -260,7 +282,10 @@ def main():
 
     logger.info("--- Overall Metrics ---")
     for k, v in metrics.items():
-        logger.info(f"  {k}: {v:.4f}")
+        if isinstance(v, numbers.Real):
+            logger.info(f"  {k}: {v:.4f}")
+        else:
+            logger.info(f"  {k}: {v}")
     logger.info(
         "  macro_f1_across_cwe: %.4f ± %.4f over %d classes",
         metrics["macro_f1_across_cwe_mean"],
@@ -314,6 +339,11 @@ def main():
                 "macro_recall": recall_score(src_labels, src_preds, average="macro", zero_division=0),
                 "macro_f1": f1_score(src_labels, src_preds, average="macro", zero_division=0),
                 "weighted_f1": f1_score(src_labels, src_preds, average="weighted", zero_division=0),
+                "mcc": matthews_corrcoef(src_labels, src_preds),
+                "macro_fpr": compute_macro_fpr(src_labels, src_preds, config["num_classes"]),
+                "run_seed": metrics.get("run_seed"),
+                "experiment_tag": args.experiment_tag,
+                "model_name": config.get("model_name"),
             }
             src_report_summary = build_classification_report_summary(src_labels, src_preds, label_names)
             src_metrics["macro_f1_across_cwe_mean"] = src_report_summary["macro_f1_across_cwe_mean"]
