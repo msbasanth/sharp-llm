@@ -1,0 +1,15 @@
+2026-08-04 18:14:26 | INFO     | Using device: cuda
+2026-08-04 18:14:26 | INFO     | Run seed: 42
+2026-08-04 18:14:26 | INFO     | Run tag: ICMLDE:Juliet118:CodeT5-Small
+2026-08-04 18:14:26 | INFO     | Loading data...
+2026-08-04 18:14:29 | INFO     | Train batches: 10342, Test batches: 2806
+2026-08-04 18:14:39 | INFO     | Model parameters — total: 35,377,014, trainable: 35,377,014
+2026-08-04 18:14:39 | INFO     | Mixed precision (fp16): True
+2026-08-04 18:26:03 | INFO     | Evaluating on test set...
+2026-08-04 18:27:50 | INFO     | Epoch 1 | Train Loss: 0.1616 | Test Loss: 0.0112 | Test Acc: 0.9974 | Test Macro-F1: 0.9426 | Test Precision: 0.9431 | Test Recall: 0.9421 | Time: 684s
+2026-08-04 18:27:51 | INFO     | New best model saved (Macro-F1: 0.9426)
+2026-08-04 18:39:14 | INFO     | Evaluating on test set...
+2026-08-04 18:41:02 | INFO     | Epoch 2 | Train Loss: 0.0076 | Test Loss: 0.0113 | Test Acc: 0.9977 | Test Macro-F1: 0.9425 | Test Precision: 0.9427 | Test Recall: 0.9423 | Time: 683s
+2026-08-04 18:41:03 | INFO     | No improvement. Patience: 1/1
+2026-08-04 18:41:03 | INFO     | Early stopping triggered
+2026-08-04 18:41:03 | INFO     | Training complete. Best Macro-F1: 0.9426

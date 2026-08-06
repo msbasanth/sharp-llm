@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-08-06T15:42:13.879701+00:00",
+  "output_root": "outputs\\icmlde2026\\juliet118",
+  "metric": "macro_f1",
+  "alpha": 0.05,
+  "results": [
+    {
+      "comparison": "ICMLDE:Juliet118:CodeT5-Base vs ICMLDE:Juliet118:CodeT5-Small",
+      "metric": "macro_f1",
+      "paired_seed_count": 5,
+      "paired_seeds": [
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "proposed_values": [
+        0.9584367944021841,
+        0.9428813048606667,
+        0.9606163838919131,
+        0.9534820707078925,
+        0.9532734417544071
+      ],
+      "baseline_values": [
+        0.9426069194334934,
+        0.9756043343563046,
+        0.9605724060132667,
+        0.9381096436864641,
+        0.9526912250998265
+      ],
+      "test_name": "paired_t_test",
+      "p_value": 0.9847980510000278,
+      "significant": false,
+      "error": null,
+      "normality_p_value": 0.14034945100224933
+    },
+    {
+      "comparison": "ICMLDE:Juliet118:CodeT5-Base vs ICMLDE:Juliet118:CodeBERT-Base",
+      "metric": "macro_f1",
+      "paired_seed_count": 5,
+      "paired_seeds": [
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "proposed_values": [
+        0.9584367944021841,
+        0.9428813048606667,
+        0.9606163838919131,
+        0.9534820707078925,
+        0.9532734417544071
+      ],
+      "baseline_values": [
+        0.9271133659963066,
+        0.9372536654133082,
+        0.8980570031979768,
+        0.8819559750038231,
+        0.9416663638556492
+      ],
+      "test_name": "paired_t_test",
+      "p_value": 0.050893667400937266,
+      "significant": false,
+      "error": null,
+      "normality_p_value": 0.3972439833659399
+    },
+    {
+      "comparison": "ICMLDE:Juliet118:CodeT5-Base vs ICMLDE:Juliet118:GraphCodeBERT-Base",
+      "metric": "macro_f1",
+      "paired_seed_count": 5,
+      "paired_seeds": [
+        42,
+        43,
+        44,
+        45,
+        46
+      ],
+      "proposed_values": [
+        0.9584367944021841,
+        0.9428813048606667,
+        0.9606163838919131,
+        0.9534820707078925,
+        0.9532734417544071
+      ],
+      "baseline_values": [
+        0.9756678149575319,
+        0.9528237356656452,
+        0.9515851785176838,
+        0.938103894383896,
+        0.9353855283606589
+      ],
+      "test_name": "paired_t_test",
+      "p_value": 0.6891156152799194,
+      "significant": false,
+      "error": null,
+      "normality_p_value": 0.30019592659883876
+    }
+  ]
+}

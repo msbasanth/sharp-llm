@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.9974161357865193,
+  "macro_precision": 0.9431016849784245,
+  "macro_recall": 0.9421388396985942,
+  "macro_f1": 0.9426069194334934,
+  "weighted_f1": 0.9974102706161838,
+  "mcc": 0.997306554506565,
+  "macro_fpr": 2.2828413998278194e-05,
+  "run_seed": 42,
+  "experiment_tag": "ICMLDE:Juliet118:CodeT5-Small",
+  "model_name": "Salesforce/codet5-small",
+  "macro_f1_across_cwe_mean": 0.9426069194334933,
+  "macro_f1_across_cwe_std": 0.22999881007426834,
+  "macro_f1_class_count": 89
+}

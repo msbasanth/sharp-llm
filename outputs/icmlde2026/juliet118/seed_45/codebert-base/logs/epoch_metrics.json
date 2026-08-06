@@ -1,0 +1,46 @@
+{
+  "model": "microsoft/codebert-base",
+  "model_variant": "codebert-base",
+  "seed": 45,
+  "run_tag": "ICMLDE:Juliet118:CodeBERT-Base",
+  "epoch_metrics": [
+    {
+      "epoch": 1,
+      "train_loss": 0.116318,
+      "test_loss": 0.043672,
+      "test_acc": 0.98913,
+      "test_f1": 0.881956,
+      "test_precision": 0.873738,
+      "test_recall": 0.896274,
+      "best_f1_so_far": 0.881956,
+      "best_acc_so_far": 0.98913,
+      "best_precision_so_far": 0.873738,
+      "best_recall_so_far": 0.896274,
+      "training_time_seconds": 1581.4
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.019388,
+      "test_loss": 0.136514,
+      "test_acc": 0.974384,
+      "test_f1": 0.820512,
+      "test_precision": 0.839966,
+      "test_recall": 0.838053,
+      "best_f1_so_far": 0.881956,
+      "best_acc_so_far": 0.98913,
+      "best_precision_so_far": 0.873738,
+      "best_recall_so_far": 0.896274,
+      "training_time_seconds": 3570.8
+    }
+  ],
+  "best_metrics": {
+    "best_f1": 0.8819559750038231,
+    "best_acc": 0.9891299505501849,
+    "best_precision": 0.8737379678781866,
+    "best_recall": 0.8962740781935103,
+    "best_f1_epoch": 1,
+    "best_acc_epoch": 1,
+    "best_precision_epoch": 1,
+    "best_recall_epoch": 1
+  }
+}

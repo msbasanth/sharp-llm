@@ -1,0 +1,46 @@
+{
+  "model": "Salesforce/codet5-base",
+  "model_variant": "codet5-base",
+  "seed": 45,
+  "run_tag": "ICMLDE:Juliet118:CodeT5-Base",
+  "epoch_metrics": [
+    {
+      "epoch": 1,
+      "train_loss": 0.120318,
+      "test_loss": 0.011563,
+      "test_acc": 0.997461,
+      "test_f1": 0.91595,
+      "test_precision": 0.913864,
+      "test_recall": 0.919987,
+      "best_f1_so_far": 0.91595,
+      "best_acc_so_far": 0.997461,
+      "best_precision_so_far": 0.913864,
+      "best_recall_so_far": 0.919987,
+      "training_time_seconds": 2018.0
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.008315,
+      "test_loss": 0.012307,
+      "test_acc": 0.997193,
+      "test_f1": 0.953482,
+      "test_precision": 0.963359,
+      "test_recall": 0.953388,
+      "best_f1_so_far": 0.953482,
+      "best_acc_so_far": 0.997461,
+      "best_precision_so_far": 0.963359,
+      "best_recall_so_far": 0.953388,
+      "training_time_seconds": 4423.5
+    }
+  ],
+  "best_metrics": {
+    "best_f1": 0.9534820707078925,
+    "best_acc": 0.9974606851695104,
+    "best_precision": 0.9633587433631194,
+    "best_recall": 0.9533879035323698,
+    "best_f1_epoch": 2,
+    "best_acc_epoch": 1,
+    "best_precision_epoch": 2,
+    "best_recall_epoch": 2
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.9974606851695104,
+  "macro_precision": 0.936485053670992,
+  "macro_recall": 0.9416340992412366,
+  "macro_f1": 0.938103894383896,
+  "weighted_f1": 0.9973615553208622,
+  "mcc": 0.9973514421945282,
+  "macro_fpr": 2.220534448495646e-05,
+  "run_seed": 45,
+  "experiment_tag": "ICMLDE:Juliet118:GraphCodeBERT-Base",
+  "model_name": "microsoft/graphcodebert-base",
+  "macro_f1_across_cwe_mean": 0.938103894383896,
+  "macro_f1_across_cwe_std": 0.2329523483582564,
+  "macro_f1_class_count": 88
+}

@@ -1,0 +1,15 @@
+{
+  "accuracy": 0.9891299505501849,
+  "macro_precision": 0.8737379678781866,
+  "macro_recall": 0.8962740781935103,
+  "macro_f1": 0.8819559750038231,
+  "weighted_f1": 0.9858934383877082,
+  "mcc": 0.988683924441731,
+  "macro_fpr": 9.348737245021353e-05,
+  "run_seed": 45,
+  "experiment_tag": "ICMLDE:Juliet118:CodeBERT-Base",
+  "model_name": "microsoft/codebert-base",
+  "macro_f1_across_cwe_mean": 0.8819559750038231,
+  "macro_f1_across_cwe_std": 0.30386733229367074,
+  "macro_f1_class_count": 88
+}

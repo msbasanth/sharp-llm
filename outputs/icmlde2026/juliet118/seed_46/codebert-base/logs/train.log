@@ -1,0 +1,15 @@
+2026-08-06 06:26:41 | INFO     | Using device: cuda
+2026-08-06 06:26:41 | INFO     | Run seed: 46
+2026-08-06 06:26:41 | INFO     | Run tag: ICMLDE:Juliet118:CodeBERT-Base
+2026-08-06 06:26:41 | INFO     | Loading data...
+2026-08-06 06:26:43 | INFO     | Train batches: 10342, Test batches: 2806
+2026-08-06 06:26:45 | INFO     | Model parameters — total: 124,736,374, trainable: 124,736,374
+2026-08-06 06:26:45 | INFO     | Mixed precision (fp16): True
+2026-08-06 06:53:13 | INFO     | Evaluating on test set...
+2026-08-06 07:00:11 | INFO     | Epoch 1 | Train Loss: 0.1007 | Test Loss: 0.0186 | Test Acc: 0.9956 | Test Macro-F1: 0.9417 | Test Precision: 0.9428 | Test Recall: 0.9445 | Time: 1588s
+2026-08-06 07:00:14 | INFO     | New best model saved (Macro-F1: 0.9417)
+2026-08-06 07:26:13 | INFO     | Evaluating on test set...
+2026-08-06 07:33:07 | INFO     | Epoch 2 | Train Loss: 0.0240 | Test Loss: 0.0173 | Test Acc: 0.9966 | Test Macro-F1: 0.9243 | Test Precision: 0.9237 | Test Recall: 0.9272 | Time: 1559s
+2026-08-06 07:33:11 | INFO     | No improvement. Patience: 1/1
+2026-08-06 07:33:11 | INFO     | Early stopping triggered
+2026-08-06 07:33:11 | INFO     | Training complete. Best Macro-F1: 0.9417

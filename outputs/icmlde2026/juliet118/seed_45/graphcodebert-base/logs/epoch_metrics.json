@@ -1,0 +1,46 @@
+{
+  "model": "microsoft/graphcodebert-base",
+  "model_variant": "graphcodebert-base",
+  "seed": 45,
+  "run_tag": "ICMLDE:Juliet118:GraphCodeBERT-Base",
+  "epoch_metrics": [
+    {
+      "epoch": 1,
+      "train_loss": 0.075182,
+      "test_loss": 0.02002,
+      "test_acc": 0.996837,
+      "test_f1": 0.936868,
+      "test_precision": 0.934668,
+      "test_recall": 0.941034,
+      "best_f1_so_far": 0.936868,
+      "best_acc_so_far": 0.996837,
+      "best_precision_so_far": 0.934668,
+      "best_recall_so_far": 0.941034,
+      "training_time_seconds": 1479.9
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.016323,
+      "test_loss": 0.014268,
+      "test_acc": 0.997461,
+      "test_f1": 0.938104,
+      "test_precision": 0.936485,
+      "test_recall": 0.941634,
+      "best_f1_so_far": 0.938104,
+      "best_acc_so_far": 0.997461,
+      "best_precision_so_far": 0.936485,
+      "best_recall_so_far": 0.941634,
+      "training_time_seconds": 3292.0
+    }
+  ],
+  "best_metrics": {
+    "best_f1": 0.938103894383896,
+    "best_acc": 0.9974606851695104,
+    "best_precision": 0.936485053670992,
+    "best_recall": 0.9416340992412366,
+    "best_f1_epoch": 2,
+    "best_acc_epoch": 2,
+    "best_precision_epoch": 2,
+    "best_recall_epoch": 2
+  }
+}

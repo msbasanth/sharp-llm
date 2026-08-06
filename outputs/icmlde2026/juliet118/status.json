@@ -1,0 +1,67 @@
+{
+  "name": "ICMLDE run status",
+  "created_at": "2026-08-04T18:13:52.995000+00:00",
+  "updated_at": "2026-08-04T20:38:02.697462+00:00",
+  "runs": {
+    "seed_42:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 42,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "done",
+      "last_completed_step": "aggregate-ready",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_42/codet5-small",
+      "updated_at": "2026-08-04T18:43:07.310490+00:00",
+      "error": null
+    },
+    "seed_43:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 43,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "done",
+      "last_completed_step": "aggregate-ready",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_43/codet5-small",
+      "updated_at": "2026-08-04T19:11:50.814202+00:00",
+      "error": null
+    },
+    "seed_44:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 44,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "done",
+      "last_completed_step": "aggregate-ready",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_44/codet5-small",
+      "updated_at": "2026-08-04T19:40:33.601428+00:00",
+      "error": null
+    },
+    "seed_45:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 45,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "done",
+      "last_completed_step": "aggregate-ready",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_45/codet5-small",
+      "updated_at": "2026-08-04T20:09:19.652915+00:00",
+      "error": null
+    },
+    "seed_46:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 46,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "done",
+      "last_completed_step": "aggregate-ready",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_46/codet5-small",
+      "updated_at": "2026-08-04T20:38:02.697438+00:00",
+      "error": null
+    }
+  }
+}

@@ -1,0 +1,14 @@
+2026-08-06 10:29:00 | INFO     | Using device: cuda
+2026-08-06 10:29:00 | INFO     | Run seed: 43
+2026-08-06 10:29:00 | INFO     | Run tag: ICMLDE:Juliet118:GraphCodeBERT-Base
+2026-08-06 10:29:00 | INFO     | Loading data...
+2026-08-06 10:29:01 | INFO     | Train batches: 10342, Test batches: 2806
+2026-08-06 10:29:03 | INFO     | Model parameters — total: 124,736,374, trainable: 124,736,374
+2026-08-06 10:29:03 | INFO     | Mixed precision (fp16): True
+2026-08-06 10:53:49 | INFO     | Evaluating on test set...
+2026-08-06 10:59:29 | INFO     | Epoch 1 | Train Loss: 0.0697 | Test Loss: 0.0163 | Test Acc: 0.9962 | Test Macro-F1: 0.9475 | Test Precision: 0.9524 | Test Recall: 0.9457 | Time: 1486s
+2026-08-06 10:59:34 | INFO     | New best model saved (Macro-F1: 0.9475)
+2026-08-06 11:24:12 | INFO     | Evaluating on test set...
+2026-08-06 11:29:52 | INFO     | Epoch 2 | Train Loss: 0.0148 | Test Loss: 0.0121 | Test Acc: 0.9976 | Test Macro-F1: 0.9528 | Test Precision: 0.9527 | Test Recall: 0.9530 | Time: 1478s
+2026-08-06 11:30:00 | INFO     | New best model saved (Macro-F1: 0.9528)
+2026-08-06 11:30:00 | INFO     | Training complete. Best Macro-F1: 0.9528
