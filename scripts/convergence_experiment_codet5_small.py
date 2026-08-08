@@ -46,7 +46,6 @@ def main():
     parser.add_argument("--batch-size", type=int, default=8, help="Batch size")
     parser.add_argument("--learning-rate", type=float, default=5e-5, help="Learning rate")
     parser.add_argument("--output-dir", type=str, required=True, help="Output directory")
-    parser.add_argument("--device", type=str, default=None, help="Device (cuda/cpu)")
     
     args = parser.parse_args()
     
@@ -62,7 +61,7 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     set_seed(args.seed)
-    device = get_device(args.device)
+    device = get_device()
     logger = setup_logging(output_dir / "train.log")
     
     logger.info("=" * 75)
