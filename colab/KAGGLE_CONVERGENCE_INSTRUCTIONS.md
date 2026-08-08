@@ -2,36 +2,89 @@
 
 ## Quick Start
 
-### Option 1: Use Kaggle Web UI (Easiest)
+### Option 1: Use Kaggle Web UI (Easiest) ⭐ RECOMMENDED
 
 1. **Navigate to Kaggle Kernels**
    - Go to https://www.kaggle.com/code
    - Click "New Notebook" → "Create Notebook"
    - Name: `sharp-llm-icmlde-convergence`
 
-2. **Copy and Paste Code**
-   - In the notebook cell, paste the following:
-   ```python
-   # Install dependencies
-   !pip install -q torch transformers scikit-learn tqdm
-
-   # Clone repository
-   !git clone https://github.com/your-username/sharp-llm.git /kaggle/working/repo
-   %cd /kaggle/working/repo
-
-   # Run convergence experiment
-   !python scripts/convergence_experiment_codet5_small.py \
-     --config config.yaml \
-     --model Salesforce/codet5-small \
-     --epochs 4 \
-     --seed 50 \
-     --output-dir /kaggle/working/outputs/icmlde2026/convergence/seed_50/codet5-small
-   ```
-
-3. **Configure GPU**
+2. **Configure GPU FIRST**
    - Click "⚙️ Settings" (top-right)
    - Select "GPU" as accelerator
    - Save
+
+3. **Copy and Paste This Code** (handles directory cleanup safely)
+   - In a notebook cell, paste this complete code block:
+
+```python
+# ============================================================================
+# CodeT5-Small Convergence Experiment on Kaggle (FIXED)
+# ============================================================================
+import os
+import shutil
+import subprocess
+import sys
+
+print("=" * 75)
+print("KAGGLE CONVERGENCE EXPERIMENT - FIXED VERSION")
+print("=" * 75)
+
+# STEP 1: Move to safe directory FIRST (before any deletions)
+os.chdir('/kaggle/working')
+print(f"\n[1] Safe directory: {os.getcwd()}")
+
+# STEP 2: Remove old repo (now safe, we're not inside it)
+print("\n[2] Cleaning up old repo...")
+repo_path = '/kaggle/working/repo'
+if os.path.exists(repo_path):
+    try:
+        shutil.rmtree(repo_path)
+        print(f"    ✓ Removed stale repo")
+    except Exception as e:
+        print(f"    ! Warning: {e}")
+
+# STEP 3: Install dependencies
+print("\n[3] Installing dependencies...")
+subprocess.run([sys.executable, '-m', 'pip', 'install', '-q', 
+                'torch', 'transformers', 'scikit-learn', 'tqdm'])
+print("    ✓ Done")
+
+# STEP 4: Clone fresh repository
+print("\n[4] Cloning repository...")
+result = subprocess.run(['git', 'clone', '--depth', '1',
+                        'https://github.com/msbasanth/sharp-llm.git', repo_path],
+                       capture_output=True, text=True)
+if result.returncode != 0:
+    print(f"    ✗ Clone failed: {result.stderr[:200]}")
+    raise RuntimeError("Git clone failed")
+print(f"    ✓ Cloned")
+
+# STEP 5: Verify files exist
+print("\n[5] Verifying repository...")
+script = os.path.join(repo_path, 'scripts/convergence_experiment_codet5_small.py')
+config = os.path.join(repo_path, 'config.yaml')
+if not os.path.exists(script) or not os.path.exists(config):
+    raise FileNotFoundError(f"Missing script or config in {repo_path}")
+print("    ✓ Files verified")
+
+# STEP 6: Change to repo and run
+print("\n[6] Running convergence experiment...")
+os.chdir(repo_path)
+print("=" * 75)
+
+cmd = [sys.executable, 'scripts/convergence_experiment_codet5_small.py',
+       '--config', 'config.yaml', '--model', 'Salesforce/codet5-small',
+       '--epochs', '4', '--seed', '50',
+       '--output-dir', '/kaggle/working/outputs/icmlde2026/convergence/seed_50/codet5-small']
+result = subprocess.run(cmd)
+
+print("=" * 75)
+if result.returncode == 0:
+    print("\n✅ CONVERGENCE EXPERIMENT COMPLETED SUCCESSFULLY")
+else:
+    print(f"\n❌ Failed with exit code {result.returncode}")
+```
 
 4. **Run**
    - Click "Run All" (▶️)
