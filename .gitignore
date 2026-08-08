@@ -21,6 +21,12 @@ _kaggle_debug/
 _log_only/
 _data_upload/
 _v20_log/
+_check_now/
+_t4_run/
+_latest/
+_v23/
+_v24/
+_v24_final/
 
 # Stray notebook copy at repo root
 colab_icmlde_runner.ipynb
