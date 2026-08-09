@@ -12,6 +12,7 @@ A framework for source code vulnerability detection, CWE classification, and **h
 | Healthcare risk prioritization (`src/risk.py`) | ✅ Complete (5-weight baseline) |
 | HVSS ML models (retrained for sklearn 1.8.0) | ✅ Complete |
 | Streamlit web UI | ✅ Running |
+| CodeT5-Small convergence analysis (8 epochs, seed 50) | ✅ Complete (F1=0.9990, Acc=0.9982, MCC=0.9981) |
 | ICMLDE five-seed reproducibility pipeline | 🚧 In progress |
 | HSVSS 8-dimensional scoring engine | 🔜 Phase 2 (next) |
 | CVSS vs HSVSS comparison study | 🔜 Phase 3 |
@@ -110,6 +111,22 @@ Artifacts are written under `outputs/icmlde2026/juliet118/` including:
 - `summary/aggregate_metrics.json`
 - `summary/significance_tests.json`
 - `summary/manuscript_table_model_comparison.csv`
+
+### Convergence Study (CodeT5-Small)
+
+An 8-epoch convergence analysis on Juliet Test Suite (template-aware splits) with seed 50:
+
+- **Final Test Metrics** — F1: 0.9990, Accuracy: 0.9982, MCC: 0.9981
+- **Generalization Gap** (Train Acc - Test Acc): 0.11% (excellent, no overfitting)
+- **Train-Test F1 Gap**: Max 0.0073 at epoch 5 (✅ well below 1% threshold)
+- **Loss Divergence**: Val/Train loss ratio 4.67 max (✅ acceptable)
+- **Platform**: Kaggle GPU kernel (8 epochs, fp16 mixed precision, batch size ~8)
+
+**Visualizations** — `outputs/icmlde2026/convergence/seed_50/codet5-small/`:
+- `convergence_detailed.png` — 4-subplot: training loss, F1 trajectory, accuracy/MCC trend, summary metrics
+- `convergence_v1_vs_v2.png` — Comparison of 4-epoch baseline vs 8-epoch improved run
+
+**Conclusion**: No significant overfitting detected; continuous improvement across all 8 epochs validates template-aware splits and model architecture.
 
 ## Prediction
 
