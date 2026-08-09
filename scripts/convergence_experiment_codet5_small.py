@@ -244,6 +244,11 @@ def main():
         f.write(f"Training Loss Trend: {epoch_metrics[0]['train_loss']:.4f} → {epoch_metrics[-1]['train_loss']:.4f}\n")
     
     logger.info(f"Summary saved to {summary_path}")
+
+    # Print epoch metrics as JSON to stdout so they're always captured in the
+    # kernel execution log (recoverable even if /kaggle/working/ files are lost)
+    logger.info("\nEPOCH_METRICS_JSON: " + json.dumps(epoch_metrics))
+
     logger.info("\n" + "=" * 75)
     logger.info("Convergence experiment completed!")
     logger.info("=" * 75)
