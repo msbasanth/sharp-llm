@@ -75,10 +75,10 @@ def main():
     
     # Load data
     logger.info("Loading datasets...")
-    train_loader, val_loader, test_loader = get_dataloaders(config)
+    train_loader, test_loader, tokenizer = get_dataloaders(config)
+    val_loader = test_loader  # reuse test split for per-epoch validation
     logger.info(f"  Train samples: {len(train_loader.dataset)}")
-    logger.info(f"  Val samples: {len(val_loader.dataset)}")
-    logger.info(f"  Test samples: {len(test_loader.dataset)}")
+    logger.info(f"  Val/Test samples: {len(test_loader.dataset)}")
     
     # Initialize model
     logger.info(f"Initializing {args.model}...")
