@@ -1,0 +1,104 @@
+[{"stream_name":"stderr","time":9.269599042,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.269679251,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.269687909,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.269692112,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":10.158069733,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.158133844,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.158141646,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.15814682,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":11.760055871,"data":"Installing Kaggle CLI...\n"}
+,{"stream_name":"stdout","time":15.114931954,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 126.2/126.2 kB 1.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.233649872,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 262.5/262.5 kB 3.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.317613838,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 126.2/126.2 kB 1.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":15.317672431,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 262.5/262.5 kB 3.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":19.71838259,"data":"✓ Kaggle CLI installed\n"}
+,{"stream_name":"stdout","time":21.390053471,"data":"Kaggle version: Kaggle CLI 2.2.4\n"}
+,{"stream_name":"stdout","time":21.390192381,"data":"✓ Kaggle CLI verified\n"}
+,{"stream_name":"stdout","time":21.5903903,"data":"Kaggle config dir: /root/.kaggle\n"}
+,{"stream_name":"stdout","time":21.590439967000002,"data":"Kaggle config file: /root/.kaggle/kaggle.json\n"}
+,{"stream_name":"stdout","time":21.590445902,"data":"✗ NOT FOUND: /root/.kaggle/kaggle.json\n"}
+,{"stream_name":"stdout","time":21.590450499,"data":"\n"}
+,{"stream_name":"stdout","time":21.590454403,"data":"📌 To authenticate:\n"}
+,{"stream_name":"stdout","time":21.59045881,"data":"  1. Download kaggle.json from https://www.kaggle.com/settings/account\n"}
+,{"stream_name":"stdout","time":21.590463013,"data":"  2. Save it to: /root/.kaggle/kaggle.json\n"}
+,{"stream_name":"stdout","time":21.590466864,"data":"  3. Run: chmod 600 /root/.kaggle/kaggle.json  (on Linux/Mac)\n"}
+,{"stream_name":"stdout","time":21.590471263,"data":"\n"}
+,{"stream_name":"stdout","time":21.590475019,"data":"Testing Kaggle API authentication...\n"}
+,{"stream_name":"stdout","time":22.992914861,"data":"✗ Authentication failed: usage: kaggle [-h] [-v] [-W]\n"}
+,{"stream_name":"stdout","time":22.992964988,"data":"              {competitions,c,datasets,d,kernels,k,models,m,files,forum\n"}
+,{"stream_name":"stdout","time":23.016807205,"data":"Kernel folder: /kaggle/working/kaggle_sharp_llm_convergence\n"}
+,{"stream_name":"stdout","time":23.016859354,"data":"\n"}
+,{"stream_name":"stdout","time":23.016864996,"data":"✓ Kernel folder ready\n"}
+,{"stream_name":"stdout","time":23.016870057,"data":"  Next: Run `kaggle kernels init -p kaggle_sharp_llm_convergence`\n"}
+,{"stream_name":"stdout","time":23.01689732,"data":"  Or continue to next cell to create metadata programmatically\n"}
+,{"stream_name":"stdout","time":23.039686381,"data":"✓ Created kernel metadata: kaggle_sharp_llm_convergence/kernel-metadata.json\n"}
+,{"stream_name":"stdout","time":23.039755034,"data":"{\n"}
+,{"stream_name":"stdout","time":23.039761186,"data":"  \"id\": \"msbasanth/sharp-llm-convergence-codet5\",\n"}
+,{"stream_name":"stdout","time":23.039765391,"data":"  \"title\": \"SHARP-LLM CodeT5-Small Convergence Experiment\",\n"}
+,{"stream_name":"stdout","time":23.039769863,"data":"  \"code_file\": \"sharp_llm_convergence_kaggle.ipynb\",\n"}
+,{"stream_name":"stdout","time":23.039774003,"data":"  \"language\": \"python\",\n"}
+,{"stream_name":"stdout","time":23.039778199,"data":"  \"kernel_type\": \"notebook\",\n"}
+,{"stream_name":"stdout","time":23.03978183,"data":"  \"is_private\": true,\n"}
+,{"stream_name":"stdout","time":23.039785664,"data":"  \"enable_gpu\": true,\n"}
+,{"stream_name":"stdout","time":23.039789107,"data":"  \"enable_internet\": true,\n"}
+,{"stream_name":"stdout","time":23.039793243,"data":"  \"dataset_sources\": [],\n"}
+,{"stream_name":"stdout","time":23.039796869,"data":"  \"competition_sources\": [],\n"}
+,{"stream_name":"stdout","time":23.039801085,"data":"  \"kernel_sources\": []\n"}
+,{"stream_name":"stdout","time":23.039805092,"data":"}\n"}
+,{"stream_name":"stdout","time":23.067068846,"data":"⚠ Notebook not found at sharp_llm_convergence_kaggle.ipynb (will be created on Kaggle)\n"}
+,{"stream_name":"stdout","time":23.067152147,"data":"\n"}
+,{"stream_name":"stdout","time":23.067159819,"data":"✓ Preflight Check:\n"}
+,{"stream_name":"stdout","time":23.067164141,"data":"  Kernel folder: /kaggle/working/kaggle_sharp_llm_convergence\n"}
+,{"stream_name":"stdout","time":23.067168798,"data":"  Files in folder:\n"}
+,{"stream_name":"stdout","time":23.0671725,"data":"    - kernel-metadata.json (0.4 KB)\n"}
+,{"stream_name":"stdout","time":23.067176567,"data":"\n"}
+,{"stream_name":"stdout","time":23.067180248,"data":"✓ Kernel metadata:\n"}
+,{"stream_name":"stdout","time":23.067184072,"data":"    ID: msbasanth/sharp-llm-convergence-codet5\n"}
+,{"stream_name":"stdout","time":23.06718904,"data":"    Title: SHARP-LLM CodeT5-Small Convergence Experiment\n"}
+,{"stream_name":"stdout","time":23.067192896,"data":"    GPU: True\n"}
+,{"stream_name":"stdout","time":23.067196759,"data":"    Private: True\n"}
+,{"stream_name":"stdout","time":23.193982942,"data":"Pushing kernel to Kaggle...\n"}
+,{"stream_name":"stdout","time":23.194035094,"data":"Command: kaggle kernels push -p kaggle_sharp_llm_convergence\n"}
+,{"stream_name":"stdout","time":23.194041236,"data":"\n"}
+,{"stream_name":"stdout","time":24.103864099,"data":"STDOUT:\n"}
+,{"stream_name":"stdout","time":24.103930417,"data":"(no stdout)\n"}
+,{"stream_name":"stdout","time":24.103937049,"data":"\n"}
+,{"stream_name":"stdout","time":24.103941402,"data":"⚠️  Push encountered SSL/connection error:\n"}
+,{"stream_name":"stdout","time":24.103946376,"data":"  Source file not found: kaggle_sharp_llm_convergence/sharp_llm_convergence_kaggle.ipynb\n"}
+,{"stream_name":"stdout","time":24.103950069,"data":"\n"}
+,{"stream_name":"stdout","time":24.103953491,"data":"\n"}
+,{"stream_name":"stdout","time":24.103956747,"data":"📌 Workaround: Push manually via Kaggle Web UI\n"}
+,{"stream_name":"stdout","time":24.103961358,"data":"  1. Go to: https://www.kaggle.com/code\n"}
+,{"stream_name":"stdout","time":24.10402142,"data":"  2. Create new notebook\n"}
+,{"stream_name":"stdout","time":24.104026994,"data":"  3. Copy this notebook content to Kaggle\n"}
+,{"stream_name":"stdout","time":24.104030765,"data":"  4. Enable GPU: Settings → GPU\n"}
+,{"stream_name":"stdout","time":24.3051287,"data":"Checking status of: msbasanth/sharp-llm-convergence-codet5\n"}
+,{"stream_name":"stdout","time":24.305197496,"data":"\n"}
+,{"stream_name":"stdout","time":26.072931339,"data":"[1/5] Could not get status: Cannot access kernel 'msbasanth/sharp-llm-convergence-codet5' (Permission 'kernels.get' was denied).\n"}
+,{"stream_name":"stdout","time":26.072981263,"data":"  Checking again in 10s...\n"}
+,{"stream_name":"stdout","time":26.072987676,"data":"\n"}
+,{"stream_name":"stdout","time":37.890028067,"data":"[2/5] Could not get status: Cannot access kernel 'msbasanth/sharp-llm-convergence-codet5' (Permission 'kernels.get' was denied).\n"}
+,{"stream_name":"stdout","time":37.890078751,"data":"  Checking again in 10s...\n"}
+,{"stream_name":"stdout","time":37.890084295,"data":"\n"}
+,{"stream_name":"stdout","time":49.097147842,"data":"[3/5] Could not get status: Cannot access kernel 'msbasanth/sharp-llm-convergence-codet5' (Permission 'kernels.get' was denied).\n"}
+,{"stream_name":"stdout","time":49.097211976,"data":"  Checking again in 10s...\n"}
+,{"stream_name":"stdout","time":49.097249416,"data":"\n"}
+,{"stream_name":"stdout","time":60.31210768,"data":"[4/5] Could not get status: Cannot access kernel 'msbasanth/sharp-llm-convergence-codet5' (Permission 'kernels.get' was denied).\n"}
+,{"stream_name":"stdout","time":60.312169706,"data":"  Checking again in 10s...\n"}
+,{"stream_name":"stdout","time":60.312176695,"data":"\n"}
+,{"stream_name":"stdout","time":72.546809154,"data":"[5/5] Could not get status: Cannot access kernel 'msbasanth/sharp-llm-convergence-codet5' (Permission 'kernels.get' was denied).\n"}
+,{"stream_name":"stdout","time":72.546886721,"data":"\n"}
+,{"stream_name":"stdout","time":72.546895226,"data":"📊 View full kernel output:\n"}
+,{"stream_name":"stdout","time":72.546901482,"data":"  https://www.kaggle.com/msbasanth/sharp-llm-convergence-codet5\n"}
+,{"stream_name":"stdout","time":72.546906733,"data":"\n"}
+,{"stream_name":"stdout","time":72.546911186,"data":"💾 Download outputs after completion from kernel page or via:\n"}
+,{"stream_name":"stdout","time":72.546915921,"data":"  kaggle kernels output msbasanth/sharp-llm-convergence-codet5\n"}
+,{"stream_name":"stderr","time":76.442445217,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":76.442506431,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":76.665628639,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":76.665672896,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":77.450266332,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":77.896723749,"data":"[NbConvertApp] Writing 22196 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":81.483507043,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":82.797980413,"data":"[NbConvertApp] Writing 316372 bytes to __results__.html\n"}
+]

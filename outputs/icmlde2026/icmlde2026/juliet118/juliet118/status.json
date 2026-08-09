@@ -1,0 +1,67 @@
+{
+  "name": "ICMLDE run status",
+  "created_at": "2026-08-04T04:47:09.690069+00:00",
+  "updated_at": "2026-08-04T04:49:26.655367+00:00",
+  "runs": {
+    "seed_42:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 42,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "failed",
+      "last_completed_step": "train",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_42/codet5-small",
+      "updated_at": "2026-08-04T04:48:12.437987+00:00",
+      "error": "Command failed (1): /usr/bin/python3 -m src.train --config config.yaml --model Salesforce/codet5-small --seed 42 --train-path data/processed/train.parquet --test-path data/processed/test.parquet --label-map-path data/processed/label_map.json --checkpoint-dir outputs/icmlde2026/juliet118/seed_42/codet5-small/checkpoints --checkpoint-dir-is-model-dir --log-dir outputs/icmlde2026/juliet118/seed_42/codet5-small/logs --log-dir-is-model-dir --run-tag ICMLDE:Juliet118:CodeT5-Small"
+    },
+    "seed_43:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 43,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "failed",
+      "last_completed_step": "train",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_43/codet5-small",
+      "updated_at": "2026-08-04T04:48:31.728773+00:00",
+      "error": "Command failed (1): /usr/bin/python3 -m src.train --config config.yaml --model Salesforce/codet5-small --seed 43 --train-path data/processed/train.parquet --test-path data/processed/test.parquet --label-map-path data/processed/label_map.json --checkpoint-dir outputs/icmlde2026/juliet118/seed_43/codet5-small/checkpoints --checkpoint-dir-is-model-dir --log-dir outputs/icmlde2026/juliet118/seed_43/codet5-small/logs --log-dir-is-model-dir --run-tag ICMLDE:Juliet118:CodeT5-Small"
+    },
+    "seed_44:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 44,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "failed",
+      "last_completed_step": "train",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_44/codet5-small",
+      "updated_at": "2026-08-04T04:48:50.062222+00:00",
+      "error": "Command failed (1): /usr/bin/python3 -m src.train --config config.yaml --model Salesforce/codet5-small --seed 44 --train-path data/processed/train.parquet --test-path data/processed/test.parquet --label-map-path data/processed/label_map.json --checkpoint-dir outputs/icmlde2026/juliet118/seed_44/codet5-small/checkpoints --checkpoint-dir-is-model-dir --log-dir outputs/icmlde2026/juliet118/seed_44/codet5-small/logs --log-dir-is-model-dir --run-tag ICMLDE:Juliet118:CodeT5-Small"
+    },
+    "seed_45:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 45,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "failed",
+      "last_completed_step": "train",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_45/codet5-small",
+      "updated_at": "2026-08-04T04:49:08.513600+00:00",
+      "error": "Command failed (1): /usr/bin/python3 -m src.train --config config.yaml --model Salesforce/codet5-small --seed 45 --train-path data/processed/train.parquet --test-path data/processed/test.parquet --label-map-path data/processed/label_map.json --checkpoint-dir outputs/icmlde2026/juliet118/seed_45/codet5-small/checkpoints --checkpoint-dir-is-model-dir --log-dir outputs/icmlde2026/juliet118/seed_45/codet5-small/logs --log-dir-is-model-dir --run-tag ICMLDE:Juliet118:CodeT5-Small"
+    },
+    "seed_46:codet5-small": {
+      "tag": "ICMLDE:Juliet118:CodeT5-Small",
+      "seed": 46,
+      "model_name": "CodeT5-Small",
+      "model_id": "Salesforce/codet5-small",
+      "variant": "codet5-small",
+      "status": "failed",
+      "last_completed_step": "train",
+      "output_dir": "outputs/icmlde2026/juliet118/seed_46/codet5-small",
+      "updated_at": "2026-08-04T04:49:26.655341+00:00",
+      "error": "Command failed (1): /usr/bin/python3 -m src.train --config config.yaml --model Salesforce/codet5-small --seed 46 --train-path data/processed/train.parquet --test-path data/processed/test.parquet --label-map-path data/processed/label_map.json --checkpoint-dir outputs/icmlde2026/juliet118/seed_46/codet5-small/checkpoints --checkpoint-dir-is-model-dir --log-dir outputs/icmlde2026/juliet118/seed_46/codet5-small/logs --log-dir-is-model-dir --run-tag ICMLDE:Juliet118:CodeT5-Small"
+    }
+  }
+}

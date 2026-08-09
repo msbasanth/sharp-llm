@@ -1,0 +1,7 @@
+2026-08-04 04:47:44 | INFO     | Using device: cuda
+2026-08-04 04:47:44 | INFO     | Run seed: 42
+2026-08-04 04:47:44 | INFO     | Run tag: ICMLDE:Juliet118:CodeT5-Small
+2026-08-04 04:47:44 | INFO     | Loading data...
+2026-08-04 04:47:47 | INFO     | Train batches: 10342, Test batches: 2806
+2026-08-04 04:47:58 | INFO     | Model parameters — total: 35,377,014, trainable: 35,377,014
+2026-08-04 04:47:58 | INFO     | Mixed precision (fp16): True
