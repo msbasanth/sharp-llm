@@ -64,7 +64,9 @@ def get_dataloaders(config: dict) -> tuple[DataLoader, DataLoader, AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
         batch_size = dl_config.get("batch_size", config["batch_size"])
     else:
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
+        # use_fast=False: avoids extra_special_tokens TypeError in newer transformers
+        # versions when loading CodeT5-Base's RoBERTa-based tokenizer without sentencepiece
+        tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=False)
         batch_size = config["batch_size"]
 
     train_df = pd.read_parquet(config["train_path"])
