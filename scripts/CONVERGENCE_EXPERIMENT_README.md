@@ -2,7 +2,7 @@
 
 ## Overview
 
-This experiment trains CodeT5-Small on the Juliet 118-CWE dataset for **4 epochs** with a **new random seed (50)** to understand training convergence behavior and how model performance improves across iterations.
+This experiment trains CodeT5-Small on the Juliet 118-CWE dataset for **8 epochs** with a **new random seed (50)** to understand training convergence behavior and how model performance improves across iterations.
 
 ## Motivation
 

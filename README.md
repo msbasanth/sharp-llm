@@ -111,6 +111,7 @@ Artifacts are written under `outputs/icmlde2026/juliet118/` including:
 - `summary/aggregate_metrics.json`
 - `summary/significance_tests.json`
 - `summary/manuscript_table_model_comparison.csv`
+how much time 5 epochs will take
 
 ### Convergence Study (CodeT5-Small)
 
