@@ -25,8 +25,11 @@ import sys
 import logging
 from pathlib import Path
 
-import truststore
-truststore.inject_into_ssl()
+try:
+    import truststore
+    truststore.inject_into_ssl()
+except ImportError:
+    pass  # Not needed outside corporate proxy environments (e.g., Kaggle)
 
 import torch
 from sklearn.metrics import f1_score, accuracy_score, matthews_corrcoef, precision_score, recall_score
