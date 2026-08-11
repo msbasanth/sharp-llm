@@ -129,6 +129,10 @@ def _split_train_val_group_aware(
                 val_indices.extend(cwe_group.index[val_idx].tolist())
                 continue
 
+            # Keep single-template CWE groups entirely in train to avoid leakage.
+            train_indices.extend(cwe_group.index.tolist())
+            continue
+
         # Fallback: row-level split if grouping is not available for this class.
         shuffled = cwe_group.sample(frac=1.0, random_state=seed)
         val_count = max(1, int(round(len(shuffled) * val_size)))
@@ -145,8 +149,19 @@ def _split_train_val_group_aware(
     val_split = train_df.loc[val_indices].reset_index(drop=True)
 
     if has_template:
-        train_templates = set(train_split["template_id"].astype(str).unique())
-        val_templates = set(val_split["template_id"].astype(str).unique())
+        # Template IDs are not globally unique in some datasets, so scope by CWE.
+        train_templates = set(
+            zip(
+                train_split["cwe_id"].astype(str),
+                train_split["template_id"].astype(str),
+            )
+        )
+        val_templates = set(
+            zip(
+                val_split["cwe_id"].astype(str),
+                val_split["template_id"].astype(str),
+            )
+        )
         overlap = train_templates & val_templates
         if overlap:
             raise ValueError(
