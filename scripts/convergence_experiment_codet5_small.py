@@ -35,7 +35,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.utils import load_config, set_seed, get_device, setup_logging
 from src.model import CWEClassifier
-from src.data.dataset import get_dataloaders
+from src.data.dataset import get_dataloaders_with_validation
 
 
 def main():
@@ -49,6 +49,7 @@ def main():
     parser.add_argument("--batch-size", type=int, default=8, help="Batch size")
     parser.add_argument("--learning-rate", type=float, default=5e-5, help="Learning rate")
     parser.add_argument("--output-dir", type=str, required=True, help="Output directory")
+    parser.add_argument("--val-size", type=float, default=0.1, help="Fraction of train split reserved for validation")
     
     args = parser.parse_args()
     
@@ -78,10 +79,14 @@ def main():
     
     # Load data
     logger.info("Loading datasets...")
-    train_loader, test_loader, tokenizer = get_dataloaders(config)
-    val_loader = test_loader  # reuse test split for per-epoch validation
+    train_loader, val_loader, test_loader, tokenizer = get_dataloaders_with_validation(
+        config,
+        val_size=args.val_size,
+        val_seed=args.seed,
+    )
     logger.info(f"  Train samples: {len(train_loader.dataset)}")
-    logger.info(f"  Val/Test samples: {len(test_loader.dataset)}")
+    logger.info(f"  Val samples: {len(val_loader.dataset)}")
+    logger.info(f"  Test samples: {len(test_loader.dataset)}")
     
     # Initialize model
     logger.info(f"Initializing {args.model}...")

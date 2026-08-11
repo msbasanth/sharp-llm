@@ -129,6 +129,8 @@ An 8-epoch convergence analysis on Juliet Test Suite (template-aware splits) wit
 
 **Conclusion**: No significant overfitting detected; continuous improvement across all 8 epochs validates template-aware splits and model architecture.
 
+CodeT5-Base and CodeT5-Small convergence runs now use an independent validation split created from the training set (group-aware by `template_id`) and keep the test split held out for testing only.
+
 ## Prediction
 
 ```bash

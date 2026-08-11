@@ -528,6 +528,8 @@ sharp-llm/
 | `src/app.py` graceful torch degradation | ✓ Added | UI loads even if torch fails, with warning banner |
 | `scripts/retrain_hvss_models.py` | ✓ Created | Reproducible retraining script for HVSS models |
 | `.github/copilot-instructions.md` | ✓ Created | README sync + commit rules |
+| `scripts/convergence_experiment_codet5_base.py` val/test aliasing | ✓ Fixed (2026-08-11) | Uses independent group-aware validation split from train; test remains held out |
+| `scripts/convergence_experiment_codet5_small.py` val/test aliasing | ✓ Fixed (2026-08-11) | Uses independent group-aware validation split from train; test remains held out |
 
 ---
 

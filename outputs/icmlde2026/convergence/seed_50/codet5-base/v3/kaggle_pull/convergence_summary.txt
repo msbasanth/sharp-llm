@@ -1,0 +1,26 @@
+===========================================================================
+CodeT5-Base Convergence Analysis (Seed 50, 5 Epochs)
+Source: Kaggle Version 3 execution log
+===========================================================================
+
+Epoch | Train Loss | Train F1 | Val Loss | Val F1 | Test F1 | Test Acc
+---------------------------------------------------------------------------
+    1 |     0.2605 |   0.7462 |   0.0218 | 0.9422 |  0.9422 |   0.9973
+    2 |     0.0094 |   0.9381 |   0.0096 | 0.9641 |  0.9641 |   0.9978
+    3 |     0.0051 |   0.9508 |   0.0081 | 0.9693 |  0.9693 |   0.9980
+    4 |     0.0037 |   0.9704 |   0.0088 | 0.9761 |  0.9761 |   0.9983
+    5 |     0.0029 |   0.9770 |   0.0123 | 0.9708 |  0.9708 |   0.9977
+
+===========================================================================
+Convergence Observations
+---------------------------------------------------------------------------
+Initial Test F1 (Epoch 1): 0.9422
+Peak Test F1 (Epoch 4):    0.9761
+Final Test F1 (Epoch 5):   0.9708
+Improvement (E1 -> E5):   +0.0286
+General trend: rapid gains to epoch 4, slight overfitting/regression at epoch 5.
+
+Expected additional artifacts from Kaggle runtime (not available via API pull here):
+- checkpoints/final.pt
+- full train.log
+===========================================================================

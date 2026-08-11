@@ -1,0 +1,11 @@
+Kaggle API direct download for kernel outputs was blocked in this environment due private kernel permissions (kernels.get denied).
+
+This folder was reconstructed from the completed run log pasted by the user on 2026-08-10.
+
+Recovered files:
+- epoch_metrics.json
+- convergence_summary.txt
+
+Not recovered from API:
+- checkpoints/final.pt
+- complete train.log

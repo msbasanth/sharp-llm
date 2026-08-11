@@ -5,6 +5,7 @@ import sys
 
 import pandas as pd
 import torch
+from sklearn.model_selection import GroupShuffleSplit
 from torch.utils.data import Dataset, DataLoader
 from transformers import AutoTokenizer
 
@@ -50,15 +51,11 @@ class CWEDataset(Dataset):
         }
 
 
-def get_dataloaders(config: dict) -> tuple[DataLoader, DataLoader, AutoTokenizer]:
-    """Create train and test DataLoaders from processed parquet files.
-
-    Returns:
-        (train_loader, test_loader, tokenizer)
-    """
-    # For DL models (BiLSTM etc.), use a separate tokenizer specified in dl config
+def _build_tokenizer_and_batch_size(config: dict) -> tuple[AutoTokenizer, int]:
+    """Create tokenizer and resolve the correct batch size for the model type."""
     model_name = config.get("model_name", "")
     dl_config = config.get("dl", {})
+
     if model_name.startswith("bilstm") or model_name.startswith("textcnn"):
         tokenizer_name = dl_config.get("tokenizer_name", "Salesforce/codet5-small")
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
@@ -75,37 +72,122 @@ def get_dataloaders(config: dict) -> tuple[DataLoader, DataLoader, AutoTokenizer
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, use_fast=False)
         batch_size = config["batch_size"]
 
+    return tokenizer, batch_size
+
+
+def _build_loader(
+    df: pd.DataFrame,
+    tokenizer,
+    config: dict,
+    batch_size: int,
+    shuffle: bool,
+) -> DataLoader:
+    dataset = CWEDataset(
+        codes=df["code"].tolist(),
+        labels=df["label"].tolist(),
+        tokenizer=tokenizer,
+        max_length=config["max_length"],
+    )
+
+    return DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        num_workers=config.get("num_workers", 0),
+        pin_memory=config.get("pin_memory", True),
+    )
+
+
+def _split_train_val_group_aware(
+    train_df: pd.DataFrame,
+    val_size: float,
+    seed: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Create train/val split from train_df while respecting template groups per CWE."""
+    if val_size <= 0.0 or val_size >= 1.0:
+        raise ValueError("val_size must be between 0 and 1")
+
+    train_indices: list[int] = []
+    val_indices: list[int] = []
+    has_template = "template_id" in train_df.columns
+
+    for _, cwe_group in train_df.groupby("cwe_id"):
+        if len(cwe_group) < 2:
+            train_indices.extend(cwe_group.index.tolist())
+            continue
+
+        if has_template:
+            templates = cwe_group["template_id"].astype(str)
+            if templates.nunique() >= 2:
+                splitter = GroupShuffleSplit(
+                    n_splits=1,
+                    test_size=val_size,
+                    random_state=seed,
+                )
+                train_idx, val_idx = next(splitter.split(cwe_group, groups=templates))
+                train_indices.extend(cwe_group.index[train_idx].tolist())
+                val_indices.extend(cwe_group.index[val_idx].tolist())
+                continue
+
+        # Fallback: row-level split if grouping is not available for this class.
+        shuffled = cwe_group.sample(frac=1.0, random_state=seed)
+        val_count = max(1, int(round(len(shuffled) * val_size)))
+        if val_count >= len(shuffled):
+            val_count = len(shuffled) - 1
+
+        val_indices.extend(shuffled.iloc[:val_count].index.tolist())
+        train_indices.extend(shuffled.iloc[val_count:].index.tolist())
+
+    if not val_indices:
+        raise ValueError("Validation split is empty; adjust val_size or dataset")
+
+    train_split = train_df.loc[train_indices].reset_index(drop=True)
+    val_split = train_df.loc[val_indices].reset_index(drop=True)
+
+    if has_template:
+        train_templates = set(train_split["template_id"].astype(str).unique())
+        val_templates = set(val_split["template_id"].astype(str).unique())
+        overlap = train_templates & val_templates
+        if overlap:
+            raise ValueError(
+                f"Template leakage detected between train/val: {len(overlap)} overlapping templates"
+            )
+
+    return train_split, val_split
+
+
+def get_dataloaders(config: dict) -> tuple[DataLoader, DataLoader, AutoTokenizer]:
+    """Create train and test DataLoaders from processed parquet files.
+
+    Returns:
+        (train_loader, test_loader, tokenizer)
+    """
+    tokenizer, batch_size = _build_tokenizer_and_batch_size(config)
+
     train_df = pd.read_parquet(config["train_path"])
     test_df = pd.read_parquet(config["test_path"])
 
-    train_dataset = CWEDataset(
-        codes=train_df["code"].tolist(),
-        labels=train_df["label"].tolist(),
-        tokenizer=tokenizer,
-        max_length=config["max_length"],
-    )
-
-    test_dataset = CWEDataset(
-        codes=test_df["code"].tolist(),
-        labels=test_df["label"].tolist(),
-        tokenizer=tokenizer,
-        max_length=config["max_length"],
-    )
-
-    train_loader = DataLoader(
-        train_dataset,
-        batch_size=batch_size,
-        shuffle=True,
-        num_workers=config.get("num_workers", 0),
-        pin_memory=config.get("pin_memory", True),
-    )
-
-    test_loader = DataLoader(
-        test_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=config.get("num_workers", 0),
-        pin_memory=config.get("pin_memory", True),
-    )
+    train_loader = _build_loader(train_df, tokenizer, config, batch_size, shuffle=True)
+    test_loader = _build_loader(test_df, tokenizer, config, batch_size, shuffle=False)
 
     return train_loader, test_loader, tokenizer
+
+
+def get_dataloaders_with_validation(
+    config: dict,
+    val_size: float = 0.1,
+    val_seed: int | None = None,
+) -> tuple[DataLoader, DataLoader, DataLoader, AutoTokenizer]:
+    """Create train, validation, and test DataLoaders with an independent val split."""
+    tokenizer, batch_size = _build_tokenizer_and_batch_size(config)
+    train_df = pd.read_parquet(config["train_path"])
+    test_df = pd.read_parquet(config["test_path"])
+
+    split_seed = config.get("seed", 42) if val_seed is None else val_seed
+    train_split, val_split = _split_train_val_group_aware(train_df, val_size, split_seed)
+
+    train_loader = _build_loader(train_split, tokenizer, config, batch_size, shuffle=True)
+    val_loader = _build_loader(val_split, tokenizer, config, batch_size, shuffle=False)
+    test_loader = _build_loader(test_df, tokenizer, config, batch_size, shuffle=False)
+
+    return train_loader, val_loader, test_loader, tokenizer

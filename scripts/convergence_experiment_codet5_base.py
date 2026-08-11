@@ -6,6 +6,9 @@ Convergence Experiment: CodeT5-Base with 5 Epochs
 Run CodeT5-Base on Juliet 118-CWE with a new seed (50) for 5 epochs
 to understand training convergence behavior.
 
+This script supports resume from an in-progress checkpoint so interrupted
+Kaggle sessions can continue with minimal lost work.
+
 Default is 5 epochs (not 8) to stay within Kaggle T4's 12-hour session
 limit (~8-10 hours estimated for CodeT5-Base at this dataset size).
 
@@ -38,7 +41,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.utils import load_config, set_seed, get_device, setup_logging
 from src.model import CWEClassifier
-from src.data.dataset import get_dataloaders
+from src.data.dataset import get_dataloaders_with_validation
 
 
 def main():
@@ -52,6 +55,9 @@ def main():
     parser.add_argument("--batch-size", type=int, default=8, help="Batch size")
     parser.add_argument("--learning-rate", type=float, default=5e-5, help="Learning rate")
     parser.add_argument("--output-dir", type=str, required=True, help="Output directory")
+    parser.add_argument("--resume", action="store_true", help="Resume from latest checkpoint if present")
+    parser.add_argument("--save-every-steps", type=int, default=200, help="Save latest checkpoint every N training batches")
+    parser.add_argument("--val-size", type=float, default=0.1, help="Fraction of train split reserved for validation")
 
     args = parser.parse_args()
 
@@ -81,10 +87,14 @@ def main():
 
     # Load data
     logger.info("Loading datasets...")
-    train_loader, test_loader, tokenizer = get_dataloaders(config)
-    val_loader = test_loader  # reuse test split for per-epoch validation
+    train_loader, val_loader, test_loader, tokenizer = get_dataloaders_with_validation(
+        config,
+        val_size=args.val_size,
+        val_seed=args.seed,
+    )
     logger.info(f"  Train samples: {len(train_loader.dataset)}")
-    logger.info(f"  Val/Test samples: {len(test_loader.dataset)}")
+    logger.info(f"  Val samples: {len(val_loader.dataset)}")
+    logger.info(f"  Test samples: {len(test_loader.dataset)}")
 
     # Initialize model
     logger.info(f"Initializing {args.model}...")
@@ -103,14 +113,41 @@ def main():
     )
     criterion = torch.nn.CrossEntropyLoss()
 
-    # Track epoch-level metrics
+    # Checkpoint paths
+    checkpoint_dir = output_dir / "checkpoints"
+    checkpoint_dir.mkdir(exist_ok=True)
+    latest_ckpt_path = checkpoint_dir / "latest.pt"
+    final_ckpt_path = checkpoint_dir / "final.pt"
+    epoch_metrics_path = output_dir / "epoch_metrics.json"
+
+    # Track epoch-level metrics and resume state
     epoch_metrics = []
+    start_epoch = 1
+    start_batch = 1
+
+    if args.resume and latest_ckpt_path.exists():
+        logger.info(f"Resuming from checkpoint: {latest_ckpt_path}")
+        ckpt = torch.load(latest_ckpt_path, map_location=device, weights_only=False)
+        model.load_state_dict(ckpt["model_state_dict"])
+        optimizer.load_state_dict(ckpt["optimizer_state_dict"])
+        start_epoch = ckpt.get("next_epoch", 1)
+        start_batch = ckpt.get("next_batch", 1)
+        epoch_metrics = ckpt.get("epoch_metrics", [])
+        logger.info(f"Resume position: epoch={start_epoch}, batch={start_batch}")
+    elif epoch_metrics_path.exists():
+        # Keep previously produced metrics if checkpoint is not available.
+        with open(epoch_metrics_path, "r") as f:
+            epoch_metrics = json.load(f)
 
     logger.info("\n" + "=" * 75)
     logger.info("Starting training...")
     logger.info("=" * 75)
 
-    for epoch in range(1, args.epochs + 1):
+    if start_epoch > args.epochs:
+        logger.info("Requested epochs already completed in a previous run.")
+        return
+
+    for epoch in range(start_epoch, args.epochs + 1):
         logger.info(f"\n--- Epoch {epoch}/{args.epochs} ---")
 
         # Training
@@ -119,7 +156,13 @@ def main():
         train_preds = []
         train_labels = []
 
-        for batch_idx, batch in enumerate(train_loader):
+        processed_batches = 0
+        resume_batch_for_epoch = start_batch if epoch == start_epoch else 1
+
+        for batch_idx, batch in enumerate(train_loader, start=1):
+            if batch_idx < resume_batch_for_epoch:
+                continue
+
             optimizer.zero_grad()
 
             input_ids = batch["input_ids"].to(device)
@@ -133,14 +176,37 @@ def main():
             optimizer.step()
 
             train_loss += loss.item()
+            processed_batches += 1
             preds = logits.argmax(dim=-1)
             train_preds.extend(preds.cpu().tolist())
             train_labels.extend(labels.cpu().tolist())
 
-            if (batch_idx + 1) % 50 == 0:
-                logger.info(f"  Batch {batch_idx + 1}/{len(train_loader)}: loss={loss.item():.4f}")
+            if batch_idx % 50 == 0:
+                logger.info(f"  Batch {batch_idx}/{len(train_loader)}: loss={loss.item():.4f}")
 
-        train_loss /= len(train_loader)
+            if args.save_every_steps > 0 and batch_idx % args.save_every_steps == 0:
+                next_batch = batch_idx + 1
+                next_epoch = epoch
+                if next_batch > len(train_loader):
+                    next_batch = 1
+                    next_epoch = epoch + 1
+
+                torch.save(
+                    {
+                        "model_state_dict": model.state_dict(),
+                        "optimizer_state_dict": optimizer.state_dict(),
+                        "next_epoch": next_epoch,
+                        "next_batch": next_batch,
+                        "epoch_metrics": epoch_metrics,
+                    },
+                    latest_ckpt_path,
+                )
+
+        if processed_batches == 0:
+            logger.info("No batches processed for this epoch (already completed). Moving on.")
+            continue
+
+        train_loss /= processed_batches
         train_f1 = f1_score(train_labels, train_preds, average="macro", zero_division=0)
         train_acc = accuracy_score(train_labels, train_preds)
 
@@ -213,15 +279,26 @@ def main():
         }
         epoch_metrics.append(epoch_metric)
 
+        # Persist metrics and checkpoint at end of each epoch.
+        with open(epoch_metrics_path, "w") as f:
+            json.dump(epoch_metrics, f, indent=2)
+
+        torch.save(
+            {
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "next_epoch": epoch + 1,
+                "next_batch": 1,
+                "epoch_metrics": epoch_metrics,
+            },
+            latest_ckpt_path,
+        )
+
     # Save final checkpoint
-    checkpoint_dir = output_dir / "checkpoints"
-    checkpoint_dir.mkdir(exist_ok=True)
-    checkpoint_path = checkpoint_dir / "final.pt"
-    torch.save(model.state_dict(), checkpoint_path)
-    logger.info(f"\nCheckpoint saved to {checkpoint_path}")
+    torch.save(model.state_dict(), final_ckpt_path)
+    logger.info(f"\nCheckpoint saved to {final_ckpt_path}")
 
     # Save epoch metrics
-    epoch_metrics_path = output_dir / "epoch_metrics.json"
     with open(epoch_metrics_path, "w") as f:
         json.dump(epoch_metrics, f, indent=2)
     logger.info(f"Epoch metrics saved to {epoch_metrics_path}")
